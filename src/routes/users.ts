@@ -16,7 +16,7 @@ export const userRouter = Router();
 userRouter.post(
   "/",
   [
-    body("name", "El nombre es obligatorio").not().isEmpty(),
+    body("names", "El nombre es obligatorio").not().isEmpty(),
     body("password", "El password debe de ser más de 6 letras").isLength({
       min: 6,
     }),

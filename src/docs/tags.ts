@@ -1,7 +1,7 @@
 export const tags = {
   tags: [
     {
-      name: "Social Calendar CRUD operations", // name of a tag
+      name: "yourcareconnects CRUD operations", // name of a tag
     },
     {
       name: "Auth",

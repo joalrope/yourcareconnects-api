@@ -1,55 +1,75 @@
 import { Schema, model } from "mongoose";
 
-export interface rrssUser {
-  snId: Schema.Types.ObjectId;
-  credential: string;
-  isActive: boolean;
-}
-
-const snSchema = new Schema<rrssUser>(
-  {
-    snId: {
-      type: Schema.Types.ObjectId,
-      ref: "SocialNetwork",
-      required: false,
-    },
-    credential: {
-      type: String,
-      required: [true, "La clave de acceso al api es obligatorio"],
-    },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  { _id: false }
-);
-
 interface User {
   uid: Schema.Types.ObjectId;
-  name: string;
+  names: string;
+  surnames: string;
   email: string;
   password: string;
-  picture: string;
+  phonenumber: string;
   role: string;
-  socialNetworks: [rrssUser];
   isActive: boolean;
+  address?: string;
+  zipcode?: string;
+  faxnumber?: string;
+  picture?: string;
+  company?: string;
+  owner?: string;
+  webpage?: string;
+  services?: string[];
+  modality?: string;
+  certificates?: string[];
 }
 
 const UserSchema = new Schema<User>(
   {
-    name: {
+    names: {
       type: String,
-      required: [true, "El nombre es obligatorio"],
+      required: [true, "Name is required"],
+    },
+    surnames: {
+      type: String,
+      required: [true, "Surname is required"],
     },
     email: {
       type: String,
-      required: [true, "El correo es obligatorio"],
+      required: [true, "Email is required"],
       unique: true,
     },
     password: {
       type: String,
-      required: [true, "La contraseña es obligatoria"],
+      required: [true, "The password is required"],
+    },
+    phonenumber: {
+      type: String,
+      required: [true, "The phonenumber is required"],
+    },
+    address: {
+      type: String,
+    },
+    zipcode: {
+      type: String,
+    },
+    faxnumber: {
+      type: String,
+    },
+    company: {
+      type: String,
+    },
+    owner: {
+      type: String,
+    },
+    webpage: {
+      type: String,
+    },
+    services: {
+      type: [String],
+    },
+    modality: {
+      type: String,
+    },
+    certificates: {
+      type: [String],
     },
     picture: {
       type: String,
@@ -57,10 +77,9 @@ const UserSchema = new Schema<User>(
     role: {
       type: String,
       required: true,
-      default: "USER_ROLE",
-      enum: ["ADMIN_ROLE", "USER_ROLE"],
+      default: "customer",
+      enum: ["superadmin", "admin", "customer", "provider"],
     },
-    socialNetworks: [snSchema],
     isActive: {
       type: Boolean,
       default: true,

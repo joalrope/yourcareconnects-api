@@ -11,12 +11,16 @@ export const userCR = {
         "application/json": {
           schema: {
             type: "object",
-            required: ["name", "email", "password"],
+            required: ["names", "surnames", "phonenumber", "email", "password"],
             properties: {
               id: {
                 $ref: "#/components/schemas/id",
               },
-              name: {
+              names: {
+                type: "string",
+                description: "The user's name",
+              },
+              surnames: {
                 type: "string",
                 description: "The user's name",
               },
@@ -28,9 +32,25 @@ export const userCR = {
                 type: "string",
                 description: "The user's password",
               },
-              picture: {
+              address: {
                 type: "string",
-                description: "The user's avatar",
+                description: "The user's addres",
+              },
+              zipcode: {
+                type: "string",
+                description: "The user's zipcode",
+              },
+              phonenumber: {
+                type: "string",
+                description: "The user's phone number",
+              },
+              services: {
+                type: "[string]",
+                description: "Sevices provide by user",
+              },
+              modality: {
+                type: "string",
+                description: "The user's modality",
               },
               role: {
                 type: "string",
@@ -38,21 +58,12 @@ export const userCR = {
               },
             },
             example: {
-              name: "Bohiques Contact",
+              names: "Bohiques",
+              surnames: "Contact",
               email: "contact@bohiques.com",
+              phonenumber: "+17851265555",
               password: "Bo.-hi2023",
-              picture: "https://cloudinary.com/45lok999ugt55f4.png",
-              socialNetworks: [
-                {
-                  snId: "644b0665d078621d04319da7",
-                  credential: "a34d5523900ca34ddssxx56fcd",
-                },
-                {
-                  snId: "644b06ccd078621d04319dab",
-                  credential: "acd8-hh65-34cd-45ca-000a",
-                },
-              ],
-              role: "USER_ROLE",
+              role: "customer",
             },
           },
         },

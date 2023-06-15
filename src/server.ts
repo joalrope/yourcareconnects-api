@@ -32,7 +32,11 @@ export class Server {
 
   middlewares() {
     // CORS
-    this.app.use(cors());
+    this.app.use(
+      cors({
+        origin: "http://localhost:3000",
+      })
+    );
 
     // Reading and parsing the body
     this.app.use(express.json());
