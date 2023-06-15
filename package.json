@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "APIRestfull for yourcareconnects front end",
   "main": "app.js",
+  "engines": {
+    "node": ">=14.20.1"
+  },
   "scripts": {
     "start:inspect": "nodemon --exec \"node --require ts-node/register --inspect=9222 app.ts\"",
     "start:dev": "nodemon app.ts",
