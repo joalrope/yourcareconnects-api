@@ -62,6 +62,8 @@ export const getUser = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   const { email, password, ...restData } = req.body;
 
+  console.log("body", req.body);
+
   try {
     let userDB = await User.findOne({ email });
 

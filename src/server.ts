@@ -34,7 +34,10 @@ export class Server {
     // CORS
     this.app.use(
       cors({
-        origin: "https://yourcareconnects-app.onrender.com",
+        origin: [
+          "http://localhost:3000",
+          "https://yourcareconnects-app.onrender.com",
+        ],
       })
     );
 
