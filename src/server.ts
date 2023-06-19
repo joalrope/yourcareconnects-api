@@ -24,6 +24,10 @@ export class Server {
 
     // Rutas de mi aplicación
     this.routes = apiRoutes(this.app);
+
+    this.app.use(function (_, res) {
+      res.redirect("/");
+    });
   }
 
   async conectarDB() {

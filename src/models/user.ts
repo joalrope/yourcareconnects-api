@@ -44,6 +44,10 @@ const UserSchema = new Schema<User>(
       type: String,
       required: [true, "The phonenumber is required"],
     },
+    balance: {
+      type: Number,
+      default: 0,
+    },
     address: {
       type: String,
     },
