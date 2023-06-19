@@ -27,9 +27,9 @@ const UserSchema = new Schema<User>(
       type: String,
       required: [true, "Name is required"],
     },
-    surnames: {
+    lastname: {
       type: String,
-      required: [true, "Surname is required"],
+      required: [true, "Last name is required"],
     },
     email: {
       type: String,
