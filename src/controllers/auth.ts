@@ -11,8 +11,9 @@ export const login = async (req: Request, res: Response) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(200).json({
         ok: false,
+        statuscode: 400,
         msg: "User / Password are not correct",
         result: {},
       });
