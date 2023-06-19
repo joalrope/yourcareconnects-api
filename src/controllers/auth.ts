@@ -20,7 +20,7 @@ export const login = async (req: Request, res: Response) => {
 
     // SI el usuario está activo
     if (!user.isActive) {
-      return res.status(400).json({
+      res.status(400).json({
         ok: false,
         msg: "User / Password are not correct - status: false",
         result: {},
@@ -31,9 +31,10 @@ export const login = async (req: Request, res: Response) => {
     const validPassword = bcryptjs.compareSync(password, user.password);
 
     if (!validPassword) {
-      return res.status(400).json({
+      return res.status(200).send({
         ok: false,
-        msg: "Usuario / Password no son correctos",
+        statuscode: 400,
+        msg: "User / Password are not correct - status: false",
         result: {},
       });
     }

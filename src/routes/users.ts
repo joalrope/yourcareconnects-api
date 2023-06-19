@@ -43,7 +43,7 @@ userRouter.put(
   "/:id",
   [
     validateJWT,
-    check("id", "Debe indicar un ID válido").notEmpty(),
+    check("id", "Debe indicar un ID").notEmpty(),
     check("id", "No es un ID válido").isMongoId(),
     check("id").custom(userIdAlreadyExists),
     validateFields,

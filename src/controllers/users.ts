@@ -34,8 +34,10 @@ export const getUsers = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
+  console.log(id);
   try {
     const userDB = await User.findById(id);
+    console.log(userDB);
 
     if (userDB) {
       return res.status(200).json({
@@ -62,12 +64,13 @@ export const getUser = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   const { email, password, ...restData } = req.body;
 
-  console.log("body", req.body);
+  console.log({ email });
 
   try {
     let userDB = await User.findOne({ email });
 
     if (userDB) {
+      console.log({ userDB });
       return res.status(409).json({
         ok: false,
         msg: `There is already a user with the email ${email}`,
