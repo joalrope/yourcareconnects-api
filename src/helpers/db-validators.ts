@@ -17,15 +17,15 @@ export const emailAlreadyExists = async (email: string = "") => {
   // Verificar si el correo existe
   const emailDB = await User.findOne({ email });
   if (emailDB) {
-    throw new Error(`El correo: ${email}, ya está registrado`);
+    throw new Error(`The email: ${email}, is already registered`);
   }
 };
 
 export const userIdAlreadyExists = async (id: Schema.Types.ObjectId) => {
-  // Verificar si el correo existe
+  // Verificar si el id existe
   const userDB = await User.findById(id);
 
   if (!userDB) {
-    throw new Error(`El usuario con el id: ${id} no existe`);
+    throw new Error(`User with id: ${id} does not exist`);
   }
 };

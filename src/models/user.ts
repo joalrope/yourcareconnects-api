@@ -46,6 +46,10 @@ const UserSchema = new Schema<User>(
     },
     balance: {
       type: Number,
+      default: 0.1,
+    },
+    points: {
+      type: Number,
       default: 0,
     },
     address: {

@@ -38,10 +38,19 @@ export const getUser = async (req: Request, res: Response) => {
     const userDB = await User.findById(id);
 
     if (userDB) {
+      if (userDB.isActive) {
+        return res.status(200).json({
+          ok: true,
+          msg: `The user with id: ${id} was successfully obtained`,
+          result: userDB,
+        });
+      }
+
       return res.status(200).json({
-        ok: true,
-        msg: `The user with id: ${id} was successfully obtained`,
+        ok: false,
+        msg: `The user with id: ${id} is inactive`,
         result: userDB,
+        statuscode: 409,
       });
     }
 
@@ -62,8 +71,12 @@ export const getUser = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   const { email, password, ...restData } = req.body;
 
+  console.log("====== create user ======");
+
   try {
     let userDB = await User.findOne({ email });
+
+    console.log(userDB);
 
     if (userDB) {
       return res.status(201).json({
@@ -104,22 +117,48 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { _id, password, email, ...restData } = req.body;
 
-  if (password) {
-    // Encriptar la contraseña
-    const salt = bcryptjs.genSaltSync();
-    restData.password = bcryptjs.hashSync(password, salt);
-  }
+  const {
+    company,
+    owner,
+    address,
+    zipcode,
+    phonenumber,
+    faxnumber,
+    webUrl,
+    certificates,
+  } = req.body;
 
   try {
-    const user = await User.findByIdAndUpdate(id, restData);
+    const user = await User.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          company,
+          owner,
+          address,
+          zipcode,
+          phonenumber,
+          faxnumber,
+          webUrl,
+        },
+        $addToSet: { certificates },
+      },
+      {
+        new: true,
+        strict: false,
+      }
+    );
+    console.log({ user });
 
-    return res.status(204).json({
-      ok: true,
-      msg: "User updated successfully",
-      result: user,
-    });
+    if (user) {
+      return res.status(200).json({
+        ok: true,
+        msg: "User updated successfully",
+        result: user,
+      });
+    }
+    return;
   } catch (error) {
     return res.status(500).json({
       ok: false,
