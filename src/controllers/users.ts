@@ -38,7 +38,7 @@ export const getUser = async (req: Request, res: Response) => {
     const userDB = await User.findById(id);
 
     if (userDB) {
-      if (userDB.isActive) {
+      if (userDB) {
         return res.status(200).json({
           ok: true,
           msg: `The user with id: ${id} was successfully obtained`,

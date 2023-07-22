@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { check } from "express-validator";
+import { body } from "express-validator";
 import { validateFields } from "../middlewares";
 import { login } from "../controllers";
 
@@ -8,8 +8,8 @@ export const authRouter = Router();
 authRouter.post(
   "/login",
   [
-    check("email", "El correo es obligatorio").isEmail(),
-    check("password", "La contraseña es obligatoria").not().isEmpty(),
+    body("email", "Mail is required").isEmail(),
+    body("password", "Password is required").not().isEmpty(),
     validateFields,
   ],
   login

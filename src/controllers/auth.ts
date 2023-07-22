@@ -20,9 +20,10 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // SI el usuario está activo
-    if (!user.isActive) {
-      res.status(400).json({
+    if (user.isDeleted) {
+      res.status(200).json({
         ok: false,
+        statuscode: 400,
         msg: "User / Password are not correct - status: false",
         result: {},
       });

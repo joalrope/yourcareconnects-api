@@ -10,7 +10,7 @@ roleRouter.post(
   "/",
   [
     validateJWT,
-    body("name", "El nombre es obligatorio").not().isEmpty(),
+    body("name", "Name is required").not().isEmpty(),
     validateFields,
   ],
   createRole
@@ -20,12 +20,12 @@ roleRouter.get("/", getRoles);
 
 roleRouter.get(
   "/:id",
-  [check("id", "No es un ID válido").isMongoId(), validateFields],
+  [check("id", "Not a valid ID").isMongoId(), validateFields],
   getRole
 );
 
 roleRouter.delete(
   "/:id",
-  [validateJWT, check("id", "No es un ID válido").isMongoId(), validateFields],
+  [validateJWT, check("id", "Not a valid ID").isMongoId(), validateFields],
   deleteRole
 );

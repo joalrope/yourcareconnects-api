@@ -16,11 +16,11 @@ export const userRouter = Router();
 userRouter.post(
   "/",
   [
-    body("names", "El nombre es obligatorio").not().isEmpty(),
-    body("password", "El password debe de ser más de 6 letras").isLength({
+    body("names", "Names is required").not().isEmpty(),
+    body("password", "The password must be more than 6 letters").isLength({
       min: 6,
     }),
-    body("email", "El correo no es válido").isEmail(),
+    body("email", "The email is invalid").isEmail(),
     body("email").custom(emailAlreadyExists),
     validateFields,
   ],
@@ -32,7 +32,7 @@ userRouter.get("/", getUsers);
 userRouter.get(
   "/:id",
   [
-    check("id", "No es un ID válido").isMongoId(),
+    check("id", "Not a valid ID").isMongoId(),
     check("id").custom(userIdAlreadyExists),
     validateFields,
   ],
@@ -43,8 +43,8 @@ userRouter.put(
   "/:id",
   [
     validateJWT,
-    check("id", "Debe indicar un ID").notEmpty(),
-    check("id", "No es un ID válido").isMongoId(),
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID").isMongoId(),
     check("id").custom(userIdAlreadyExists),
     validateFields,
   ],
@@ -55,8 +55,8 @@ userRouter.delete(
   "/:id",
   [
     validateJWT,
-    check("id", "Debe indicar un ID válido").notEmpty(),
-    check("id", "No es un ID válido").isMongoId(),
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID ").isMongoId(),
     check("id").custom(userIdAlreadyExists),
     validateFields,
   ],

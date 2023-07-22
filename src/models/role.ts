@@ -3,30 +3,31 @@ import { Schema, model } from "mongoose";
 interface IRole {
   uid: Schema.Types.ObjectId;
   name: string;
-  isActive: boolean;
-  userId: Schema.Types.ObjectId;
+  isDeleted: boolean;
 }
 
 const RoleSchema = new Schema<IRole>(
   {
     name: {
       type: String,
-      required: [true, "El rol es obligatorio"],
+      required: [true, "role is required"],
     },
-    isActive: {
+    isDeleted: {
       type: Boolean,
-      default: true,
-      required: true,
-    },
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: false,
+      default: false,
     },
   },
   {
     timestamps: true,
   }
 );
+
+RoleSchema.pre('find', function() {
+  this.where({ isDeleted: false });
+});
+  
+RoleSchema.pre('findOne', function() {
+  this.where({ isDeleted: false });
+});
 
 export const Role = model("Role", RoleSchema);

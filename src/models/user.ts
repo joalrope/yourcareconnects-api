@@ -3,12 +3,13 @@ import { Schema, model } from "mongoose";
 interface User {
   uid: Schema.Types.ObjectId;
   names: string;
-  surnames: string;
+  lastname: string;
   email: string;
   password: string;
   phonenumber: string;
   role: string;
-  isActive: boolean;
+  isDeleted: boolean;
+  notifications?: number;
   address?: string;
   zipcode?: string;
   faxnumber?: string;
@@ -88,15 +89,23 @@ const UserSchema = new Schema<User>(
       default: "customer",
       enum: ["superadmin", "admin", "customer", "provider"],
     },
-    isActive: {
+    isDeleted: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   {
     timestamps: true,
   }
 );
+
+UserSchema.pre("find", function () {
+  this.where({ isDeleted: false });
+});
+
+UserSchema.pre("findOne", function () {
+  this.where({ isDeleted: false });
+});
 
 UserSchema.methods.toJSON = function () {
   const { __v, password, _id, ...user } = this.toObject();
