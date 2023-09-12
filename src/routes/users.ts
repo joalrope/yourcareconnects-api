@@ -42,11 +42,11 @@ userRouter.get(
 userRouter.put(
   "/:id",
   [
-    validateJWT,
+    /*validateJWT,
     check("id", "You must provide an ID").notEmpty(),
     check("id", "Not a valid ID").isMongoId(),
     check("id").custom(userIdAlreadyExists),
-    validateFields,
+    validateFields,*/
   ],
   updateUser
 );

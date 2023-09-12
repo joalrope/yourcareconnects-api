@@ -3,22 +3,24 @@ import { Schema, model } from "mongoose";
 interface User {
   uid: Schema.Types.ObjectId;
   names: string;
-  lastname: string;
+  lastName: string;
   email: string;
   password: string;
-  phonenumber: string;
+  phoneNumber: string;
+  balance?: number;
+  points?: number;
   role: string;
   isDeleted: boolean;
   notifications?: number;
   address?: string;
-  zipcode?: string;
-  faxnumber?: string;
+  zipCode?: string;
+  faxNumber?: string;
   picture?: string;
   company?: string;
   owner?: string;
-  webpage?: string;
+  webPage?: string;
   services?: string[];
-  modality?: string;
+  serviceModality?: string[];
   certificates?: string[];
 }
 
@@ -28,7 +30,7 @@ const UserSchema = new Schema<User>(
       type: String,
       required: [true, "Name is required"],
     },
-    lastname: {
+    lastName: {
       type: String,
       required: [true, "Last name is required"],
     },
@@ -41,7 +43,7 @@ const UserSchema = new Schema<User>(
       type: String,
       required: [true, "The password is required"],
     },
-    phonenumber: {
+    phoneNumber: {
       type: String,
       required: [true, "The phonenumber is required"],
     },
@@ -53,13 +55,17 @@ const UserSchema = new Schema<User>(
       type: Number,
       default: 0,
     },
+    notifications: {
+      type: Number,
+      default: 0,
+    },
     address: {
       type: String,
     },
-    zipcode: {
+    zipCode: {
       type: String,
     },
-    faxnumber: {
+    faxNumber: {
       type: String,
     },
     company: {
@@ -74,8 +80,8 @@ const UserSchema = new Schema<User>(
     services: {
       type: [String],
     },
-    modality: {
-      type: String,
+    serviceModality: {
+      type: [String],
     },
     certificates: {
       type: [String],

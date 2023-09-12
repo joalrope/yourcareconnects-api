@@ -5,11 +5,11 @@ interface Service {
   title: string;
   value: string;
   children?: object[];
-  tagColor: string;
+  tagColor: object;
   isDeleted: boolean;
 }
 
-const ServiceSchema = new Schema<Service>(
+const ChildrenSchema = new Schema<Service>(
   {
     title: {
       type: String,
@@ -22,8 +22,40 @@ const ServiceSchema = new Schema<Service>(
       type: [Object],
     },
     tagColor: {
+      type: Object,
+      default: {
+        bgc: "#" + Math.floor(Math.random() * 16777215).toString(16),
+        frc: "#" + Math.floor(Math.random() * 16777215).toString(16),
+      },
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const ServiceSchema = new Schema<Service>(
+  {
+    title: {
       type: String,
-      default: Math.floor(Math.random() * 16777215).toString(16),
+      required: [true, "Title is required"],
+    },
+    value: {
+      type: String,
+    },
+    children: {
+      type: [ChildrenSchema],
+    },
+    tagColor: {
+      type: Object,
+      default: {
+        bgc: "#" + Math.floor(Math.random() * 16777215).toString(16),
+        frc: "#" + Math.floor(Math.random() * 16777215).toString(16),
+      },
     },
     isDeleted: {
       type: Boolean,
@@ -40,6 +72,10 @@ ServiceSchema.pre("find", function () {
 });
 
 ServiceSchema.pre("findOne", function () {
+  this.where({ isDeleted: false });
+});
+
+ServiceSchema.pre("findById", function () {
   this.where({ isDeleted: false });
 });
 

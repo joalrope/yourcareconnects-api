@@ -71,8 +71,6 @@ export const getUser = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   const { email, password, ...restData } = req.body;
 
-  console.log("====== create user ======");
-
   try {
     let userDB = await User.findOne({ email });
 
@@ -97,6 +95,7 @@ export const createUser = async (req: Request, res: Response) => {
 
     // Generar el JWT
     const token = await generateJWT(user.id, user.email, user.role);
+    console.log({ token });
 
     return res.status(201).json({
       ok: true,
@@ -107,6 +106,8 @@ export const createUser = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({
       ok: false,
       msg: "Please talk to the administrator",
@@ -126,8 +127,11 @@ export const updateUser = async (req: Request, res: Response) => {
     phonenumber,
     faxnumber,
     webUrl,
-    certificates,
+    services,
+    serviceModality,
   } = req.body;
+
+  console.log(req.body);
 
   try {
     const user = await User.findByIdAndUpdate(
@@ -142,14 +146,16 @@ export const updateUser = async (req: Request, res: Response) => {
           faxnumber,
           webUrl,
         },
-        $addToSet: { certificates },
+        $addToSet: {
+          services: [...services],
+          serviceModality: [...serviceModality],
+        },
       },
       {
         new: true,
         strict: false,
       }
     );
-    console.log({ user });
 
     if (user) {
       return res.status(200).json({

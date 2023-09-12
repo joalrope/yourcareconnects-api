@@ -2,11 +2,8 @@ import { Request, Response } from "express";
 
 import { Service } from "../models/index";
 
-export const getServices = async (req: Request, res: Response) => {
-  //const { limit = 5, from = 0 } = req.query;
-
-  console.log(req.query);
-
+export const getServices = async (_req: Request, res: Response) => {
+  //
   try {
     const [total, services] = await Promise.all([
       Service.countDocuments(),
@@ -69,10 +66,10 @@ export const getService = async (req: Request, res: Response) => {
 };
 
 export const createService = async (req: Request, res: Response) => {
-  const { title } = req.body;
+  const { title, color } = req.body;
 
   try {
-    let serviceDB = await Service.findOne({ title });
+    let serviceDB = await Service.findOne({ title }, { new: true });
 
     if (serviceDB) {
       return res.status(201).json({
@@ -82,7 +79,11 @@ export const createService = async (req: Request, res: Response) => {
       });
     }
 
-    const service = new Service({ title, value: title });
+    const service = new Service({
+      title,
+      value: title,
+      tagColor: { bgc: color, frc: color },
+    });
 
     // Guardar en BD
     await service.save();
@@ -102,29 +103,86 @@ export const createService = async (req: Request, res: Response) => {
 };
 
 export const updateService = async (req: Request, res: Response) => {
-  const { parent, title, child } = req.body;
-  const push = !child
-    ? { children: { title, value: title } }
-    : { children: { title, value: title, children: child } };
+  const { parent, title, color } = req.body;
+
+  console.log({ parent, title, color });
 
   try {
-    const savedService = await Service.updateOne(
-      { title: parent },
+    if (!parent.includes(".") && parent.split(".").length === 1) {
+      const updatedService = await Service.findOneAndUpdate(
+        { title: parent },
+        {
+          $push: {
+            children: {
+              title,
+              value: title,
+              tagColor: { bgc: color, frc: color },
+            },
+          },
+        },
+        { new: true }
+      );
+
+      if (updatedService) {
+        return res.status(200).json({
+          ok: true,
+          msg: "Service updated successfully",
+          result: updatedService,
+        });
+      }
+    }
+
+    const splited = parent.split(".");
+
+    if (!parent.includes(".") && parent.split(".").length === 2) {
+      const updatedService = await Service.findByIdAndUpdate(
+        {
+          title: splited[0],
+          "children.title": splited[1],
+        },
+        {
+          $push: {
+            "children.$.children": {
+              title,
+              value: title,
+              tagColor: { bgc: color, frc: color },
+            },
+          },
+        }
+      ).then((doc: Array<any>) => doc.push({ title, value: title }));
+
+      if (updatedService) {
+        return res.status(200).json({
+          ok: true,
+          msg: "Service updated successfully",
+          result: updatedService,
+        });
+      }
+    }
+
+    const updatedService = await Service.updateOne(
+      { title: splited[0] },
       {
         $push: {
-          ...push,
+          "children.$[child].children": {
+            title,
+            value: title,
+            tagColor: { bgc: color, frc: color },
+          },
         },
+      },
+      {
+        arrayFilters: [{ "child.title": splited[1] }],
       }
     );
 
-    if (savedService) {
+    if (updatedService) {
       return res.status(200).json({
         ok: true,
         msg: "Service updated successfully",
-        result: savedService,
+        result: updatedService,
       });
     }
-    return;
   } catch (error) {
     return res.status(500).json({
       ok: false,
@@ -132,6 +190,11 @@ export const updateService = async (req: Request, res: Response) => {
       result: { error },
     });
   }
+  return res.status(409).json({
+    ok: false,
+    msg: "Service failed to be updated",
+    result: {},
+  });
 };
 
 export const deleteService = async (req: Request, res: Response) => {

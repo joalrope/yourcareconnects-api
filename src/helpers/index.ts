@@ -6,3 +6,4 @@ export {
 export { generateJWT } from "./jwt";
 export { uploadFiles } from "./upload-files";
 export { isDate, isAfter } from "./date-validator";
+export { sendEmail } from "./mailer";

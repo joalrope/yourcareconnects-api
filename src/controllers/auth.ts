@@ -2,11 +2,27 @@ import { Request, Response } from "express";
 import bcryptjs from "bcryptjs";
 import { User } from "../models";
 import { generateJWT } from "../helpers/jwt";
+import { sendEmail } from "../helpers";
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
+    const mailOptions = {
+      from: "jrodriguez@bohiques.com",
+      to: "joalrope@gmail.com",
+      subject: "Hello from Node.js app!",
+      generateTextFromHTML: true,
+      html: `<h1>Hello world! Envio de correo desde Node.js</h1>
+      <div style="background-color:black;border-radius: 10px; padding: 20px; text-align: center; width: 220px" >
+        <img src="https://yourcareconnects.com/wp-content/uploads/2023/08/cropped-your-care-connects-logo-letras-blancas-02-1024x501.png" alt="yourcareconnects logo" width="200px"/>
+      </div>
+      <div>http://yourcareconnects.com/</div>
+      `,
+    };
+
+    await sendEmail(mailOptions);
+
     // Verificar si el email existe
     const user = await User.findOne({ email });
 
@@ -24,7 +40,7 @@ export const login = async (req: Request, res: Response) => {
       res.status(200).json({
         ok: false,
         statuscode: 400,
-        msg: "User / Password are not correct - status: false",
+        msg: "User dont't exist - status: false",
         result: {},
       });
     }
