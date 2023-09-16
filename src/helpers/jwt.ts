@@ -1,7 +1,11 @@
 import { Request } from "express";
 import jwt from "jsonwebtoken";
 
-export const generateJWT = (uid: string, email: string, role: string) => {
+export const generateJWT = (
+  uid: string | undefined,
+  email: string,
+  role: string
+) => {
   return new Promise((resolve, reject) => {
     const payload = { uid, email, role };
 

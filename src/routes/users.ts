@@ -9,6 +9,7 @@ import {
   updateUser,
   createUser,
   deleteUser,
+  getUsersByServices,
 } from "../controllers";
 
 export const userRouter = Router();
@@ -28,6 +29,7 @@ userRouter.post(
 );
 
 userRouter.get("/", getUsers);
+userRouter.get("/services/", getUsersByServices);
 
 userRouter.get(
   "/:id",

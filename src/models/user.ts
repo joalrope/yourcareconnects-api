@@ -1,7 +1,8 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Document, model, Schema } from "mongoose";
 
-interface User {
-  uid: Schema.Types.ObjectId;
+export interface IUser extends Document {
+  id?: string;
+  uid: mongoose.Types.ObjectId;
   names: string;
   lastName: string;
   email: string;
@@ -24,7 +25,7 @@ interface User {
   certificates?: string[];
 }
 
-const UserSchema = new Schema<User>(
+const UserSchema = new Schema<IUser>(
   {
     names: {
       type: String,

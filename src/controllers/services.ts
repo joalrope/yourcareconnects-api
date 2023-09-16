@@ -4,6 +4,7 @@ import { Service } from "../models/index";
 
 export const getServices = async (_req: Request, res: Response) => {
   //
+  console.log("getting services");
   try {
     const [total, services] = await Promise.all([
       Service.countDocuments(),

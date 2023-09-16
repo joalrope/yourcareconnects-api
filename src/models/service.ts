@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
-interface Service {
+export interface IService extends Document {
   uid: Schema.Types.ObjectId;
   title: string;
   value: string;
@@ -9,7 +9,7 @@ interface Service {
   isDeleted: boolean;
 }
 
-const ChildrenSchema = new Schema<Service>(
+const ChildrenSchema = new Schema<IService>(
   {
     title: {
       type: String,
@@ -38,7 +38,7 @@ const ChildrenSchema = new Schema<Service>(
   }
 );
 
-const ServiceSchema = new Schema<Service>(
+const ServiceSchema = new Schema<IService>(
   {
     title: {
       type: String,
