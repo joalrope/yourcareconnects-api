@@ -13,7 +13,7 @@ export const validateJWT = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.header("authorization")?.replace("Bearer ", "");
+  const token = req.header("x-token");
 
   if (!token) {
     return res.status(401).json({
@@ -38,7 +38,7 @@ export const validateJWT = async (
     }
 
     // Verificar si el uid tiene estado true
-    if (!user.isActive) {
+    if (user.isDeleted) {
       return res.status(401).json({
         msg: "Invalid token - user status: false",
       });
@@ -49,7 +49,7 @@ export const validateJWT = async (
   } catch (error) {
     console.log(error);
     return res.status(401).json({
-      msg: "Invalid token",
+      msg: `Invalid token - ${error}`,
     });
   }
 };

@@ -1,5 +1,21 @@
 import mongoose, { Document, model, Schema } from "mongoose";
 
+export interface IResetPassword {
+  token: string;
+  expires: number;
+}
+
+const resetPassword = new Schema<IResetPassword>({
+  token: {
+    type: String,
+    default: "",
+  },
+  expires: {
+    type: Number,
+    default: 0,
+  },
+});
+
 export interface IUser extends Document {
   id?: string;
   uid: mongoose.Types.ObjectId;
@@ -14,12 +30,13 @@ export interface IUser extends Document {
   isDeleted: boolean;
   notifications?: number;
   address?: string;
+  resetPassword?: IResetPassword;
   zipCode?: string;
   faxNumber?: string;
-  picture?: string;
+  pictures?: Object;
   company?: string;
   owner?: string;
-  webPage?: string;
+  webUrl?: string;
   services?: string[];
   serviceModality?: string[];
   certificates?: string[];
@@ -69,13 +86,17 @@ const UserSchema = new Schema<IUser>(
     faxNumber: {
       type: String,
     },
+    resetPassword: {
+      type: resetPassword,
+      default: { token: "", expires: 0 },
+    },
     company: {
       type: String,
     },
     owner: {
       type: String,
     },
-    webpage: {
+    webUrl: {
       type: String,
     },
     services: {
@@ -87,8 +108,9 @@ const UserSchema = new Schema<IUser>(
     certificates: {
       type: [String],
     },
-    picture: {
-      type: String,
+    pictures: {
+      type: Object,
+      default: { profile: "" },
     },
     role: {
       type: String,

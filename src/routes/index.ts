@@ -1,6 +1,6 @@
 import { Express } from "express";
 import { serviceRouter } from "./service";
-import { uploadRouter } from "./uploads";
+import { uploadRouter } from "./upload";
 import { searchRouter } from "./search";
 import { userRouter } from "./users";
 import { roleRouter } from "./roles";

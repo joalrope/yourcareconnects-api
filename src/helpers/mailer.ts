@@ -18,7 +18,7 @@ export const sendEmail = async (options: Options) => {
 
   try {
     return transport.sendMail(options, (error, response) => {
-      console.log("respuesta y error", { error, response });
+      //console.log("respuesta y error", { error, response });
       transport.close();
       return error ? error : response;
     });

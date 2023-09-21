@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-export { fileUpload, updateImage, showImage } from "./uploads";
+//export { fileUpload, updateImage, showImage } from "./uploads";
 
 export {
   getUsers,
@@ -18,7 +18,7 @@ export {
   deleteService,
 } from "./services";
 export { getRoles, getRole, createRole, deleteRole } from "./roles";
-export { login } from "./auth";
+export { changePassword, forgotPassword, login } from "./auth";
 export { geti18n } from "./i18n";
 export { searchUser, searchService } from "./search";
 

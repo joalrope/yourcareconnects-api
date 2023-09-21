@@ -8,15 +8,17 @@ export const validateFileToUpload = (
   if (
     !req.files ||
     Object.keys(req.files).length === 0 ||
-    !req.files.fileName
+    //!req.files.fileName
+    !req.files
   ) {
     return res.status(400).json({
       msg: "There are no files to upload - validateFileUpload",
     });
   }
 
-  const validExtensions = ["png", "jpg", "jpeg", "gif"];
-  const data = JSON.parse(JSON.stringify(req.files.fileName));
+  const validExtensions = ["png", "jpg", "jpeg"];
+  //const data = JSON.parse(JSON.stringify(req.files.fileName));
+  const data = JSON.parse(JSON.stringify(req.files));
   const { name } = data;
   const splitedName = name.split(".");
   const extension = splitedName[splitedName.length - 1];

@@ -2,27 +2,15 @@ import { Request, Response } from "express";
 import bcryptjs from "bcryptjs";
 import { User } from "../models";
 import { generateJWT } from "../helpers/jwt";
+import crypto from "crypto";
 import { sendEmail } from "../helpers";
+import { returnErrorStatus } from ".";
+//import { sendEmail } from "../helpers";
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    const mailOptions = {
-      from: "jrodriguez@bohiques.com",
-      to: "joalrope@gmail.com",
-      subject: "Hello from Node.js app!",
-      generateTextFromHTML: true,
-      html: `<h1>Hello world! Envio de correo desde Node.js</h1>
-      <div style="background-color:black;border-radius: 10px; padding: 20px; text-align: center; width: 220px" >
-        <img src="https://yourcareconnects.com/wp-content/uploads/2023/08/cropped-your-care-connects-logo-letras-blancas-02-1024x501.png" alt="yourcareconnects logo" width="200px"/>
-      </div>
-      <div>http://yourcareconnects.com/</div>
-      `,
-    };
-
-    await sendEmail(mailOptions);
-
     // Verificar si el email existe
     const user = await User.findOne({ email });
 
@@ -75,4 +63,113 @@ export const login = async (req: Request, res: Response) => {
       result: { error },
     });
   }
+};
+
+export const changePassword = async (req: Request, res: Response) => {
+  const { token, password } = req.body;
+
+  const user = await User.findOne({
+    "resetPassword.token": token,
+  });
+
+  if (!user) {
+    return res.status(404).json({
+      ok: false,
+      msg: "User not found",
+      result: {},
+    });
+  }
+
+  const {
+    resetPassword: { expires },
+  } = user;
+
+  if (Date.now() > expires) {
+    return res.status(404).json({
+      ok: false,
+      msg: "Token expired",
+      result: {},
+    });
+  }
+
+  const salt = bcryptjs.genSaltSync();
+  user.password = bcryptjs.hashSync(password, salt);
+  user.resetPassword = {
+    token: "",
+    expires: 0,
+  };
+
+  // Guardar en BD
+  try {
+    await user!.save();
+  } catch (error) {
+    returnErrorStatus(error, res);
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: `password changed to ${user.resetPassword}`,
+  });
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({
+      ok: false,
+      msg: "User not found",
+      result: {},
+    });
+  }
+
+  const init = crypto.randomBytes(32).toString("hex");
+  const code = crypto.randomBytes(64).toString("hex");
+  const data = crypto.randomBytes(16).toString("hex");
+
+  user = await User.findOneAndUpdate(
+    { email },
+    {
+      resetPassword: {
+        token: `${init}${code}${data}`,
+        expires: Date.now() + 3600000,
+      },
+    }
+  );
+
+  const mailOptions = {
+    from: "jrodriguez@bohiques.com",
+    to: `${email}`,
+    subject: "yourcareconnects-app password recovery",
+    generateTextFromHTML: true,
+    html: `<h3>Hola ${`${user.names} ${user.lastName}`}</h3>
+    <div style="display:flex;justify-content:space-between">
+      <div style="background-color:black;border-radius:10px;padding:20px;flex:1 0 20%;margin-right:20px;height:40px;text-align:center; width:120px" >
+        <img src="https://yourcareconnects.com/wp-content/uploads/2023/08/cropped-your-care-connects-logo-letras-blancas-02-1024x501.png" alt="yourcareconnects logo" width="100px"/>
+      </div>
+      <div>
+        <p style="margin:0px;">At <span>http://yourcareconnects.com/</span> we have received a request to reset your password. To reset your password please click on this button:
+        <div style="margin: 64px;text-align: center">
+          <a style="block:inline;border:1px solid #1a1a13;border-radius:5px;height:60px;padding:5px 25px;margin:120px;text-decoration:none;background:#fbd467;color:#1a1a13;font-family: arial, sans-serif;font-size: 1em;line-height:1em;white-space: nowrap" href="http://localhost:3000/auth/change-password/${init}/${code}/${data}">Reset your password</a>
+        </div>
+        
+        <p>or copy and paste this link in your browser</p>
+        <br/>
+        <p>Have a nice day</p>
+        <br/>
+        <br/>
+        Yourcareconnects Support Team
+      </div>
+    </div>
+    `,
+  };
+
+  await sendEmail(mailOptions);
+
+  return res.status(200).json({
+    ok: true,
+    msg: `password changed to ${`http://localhost:5000/reset/${init}/${code}/${data}`}`,
+  });
 };

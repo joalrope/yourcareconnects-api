@@ -74,11 +74,23 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { email, password, ...restData } = req.body;
+  const { email, password, picture, address, ...restData } = req.body;
 
   let user: IUser;
   let userDB: IUser;
   let response: IResponse;
+
+  const complement = {
+    address: "",
+    faxNumber: "",
+    owner: "",
+    picture: "",
+    services: [],
+    serviceModality: [],
+    certificates: [],
+    webUrl: "",
+    zipCode: "",
+  };
 
   try {
     userDB = await User.findOne({ email });
@@ -87,6 +99,7 @@ export const createUser = async (req: Request, res: Response) => {
   }
 
   if (userDB!) {
+    console.log(userDB);
     response = {
       ok: false,
       msg: `There is already a user with the email: ${email}`,
@@ -97,7 +110,7 @@ export const createUser = async (req: Request, res: Response) => {
   }
 
   try {
-    user = new User({ email, password, ...restData });
+    user = new User({ email, password, ...restData, ...complement });
   } catch (error) {
     returnErrorStatus(error, res);
   }
@@ -171,9 +184,9 @@ export const updateUser = async (req: Request, res: Response) => {
     company,
     owner,
     address,
-    zipcode,
-    phonenumber,
-    faxnumber,
+    zipCode,
+    phoneNumber,
+    faxNumber,
     webUrl,
     services,
     serviceModality,
@@ -189,9 +202,9 @@ export const updateUser = async (req: Request, res: Response) => {
           company,
           owner,
           address,
-          zipcode,
-          phonenumber,
-          faxnumber,
+          zipCode,
+          phoneNumber,
+          faxNumber,
           webUrl,
         },
         $addToSet: {

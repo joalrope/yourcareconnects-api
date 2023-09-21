@@ -4,7 +4,6 @@ import { dbConnection } from "./database/config";
 import swaggerUI from "swagger-ui-express";
 //import { swaggerStart } from "./docs/swagger-start";
 import { options } from "./docs/index";
-import fileUpload from "express-fileupload";
 import { apiRoutes } from "./routes";
 
 export class Server {
@@ -48,20 +47,13 @@ export class Server {
     // Reading and parsing the body
     this.app.use(express.json());
 
+    // statics Directories
+    this.app.use("/public", express.static(__dirname + "/public"));
+    this.app.use("/images", express.static(__dirname + "/uploads/images"));
+    this.app.use("/docs", express.static(__dirname + "/uploads/docs"));
+
     // Swagger integration
     this.app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(options));
-
-    // Public Directory
-    this.app.use(express.static("public"));
-
-    // File upload
-    this.app.use(
-      fileUpload({
-        useTempFiles: true,
-        tempFileDir: "/tmp/",
-        createParentPath: true,
-      })
-    );
   }
 
   listen() {

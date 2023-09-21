@@ -1,101 +1,111 @@
-import { Request, Response } from "express";
+import { Request as Req, Response as Resp } from "express";
+import { glob } from "glob";
 import path from "path";
-import fs from "fs";
-import { uploadFiles } from "../helpers";
+import { sendEmail } from "../helpers";
 import { User } from "../models";
-import { getUserData } from "../helpers/jwt";
+const fs = require("fs").promises;
 
-export const fileUpload = async (req: Request, res: Response) => {
-  try {
-    // txt, md
-    // const nombre = await subirArchivo( req.files, ['txt','md'], 'textos' );
-    const { userId } = getUserData(req);
-    const name = await uploadFiles(req.files, userId);
+interface imgData {
+  id: string;
+  name: string;
+  userId: string;
+  image: string;
+}
 
-    res.json({
-      ok: true,
-      msg: "The image was upload",
-      result: { name },
-    });
-  } catch (error) {
-    res.status(400).json({
-      ok: false,
-      msg: "Please talk to administrator",
-      result: { error },
-    });
-  }
+export const uploadImage = async (_req: Req, res: Resp) => {
+  res.status(200).json({
+    ok: true,
+    msg: "Successfully uploaded files",
+  });
 };
 
-export const updateImage = async (req: Request, res: Response) => {
-  const { id, colection } = req.params;
+export const getImage = async (req: Req, res: Resp) => {
+  const { img, userId } = req.params;
 
-  let model;
+  console.log({ img, userId });
 
-  switch (colection) {
-    case "users":
-      model = await User.findById(id);
-      if (!model) {
-        return res.status(400).json({
-          msg: `There is no user with the id ${id}`,
-        });
+  const url = path.join(__dirname, `../../uploads/images/${userId}/${img}`);
+  res.sendFile(url);
+};
+
+export const getImages = async (_req: Req, res: Resp) => {
+  const data: string[][] = await searchImages("uploads/images/**/*");
+
+  imagesPopulate(data)
+    .then((result) => {
+      res.status(200).json({
+        ok: true,
+        msg: "Successfully catched files",
+        result,
+      });
+    })
+    .catch((error) => {
+      console.log("an error occurred during the operation:", error);
+    });
+};
+
+const imagesPopulate = (data: string[][]) => {
+  return new Promise((resolve, reject) => {
+    const result: imgData[] = [];
+    try {
+      data.map(async (item, i, array) => {
+        if (item.length > 0) {
+          const [userId, image] = item;
+          const user = await User.findById(userId);
+          const name = String(user?.name);
+
+          result.push({ id: userId, name, userId, image });
+
+          if (i === array.length - 1) {
+            resolve(result);
+          }
+        }
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const searchImages = (pattern: string): Promise<string[][]> => {
+  return new Promise((resolve, reject) => {
+    glob(pattern, (error: any, files: any[]) => {
+      if (error) {
+        reject(error);
+        return;
       }
+      resolve(
+        files.map((file: string) => {
+          return file
+            .substring(pattern.length - 4)
+            .split("/")
+            .filter((_v: any, _i: any, a: string | any[]) => a.length > 1);
+        })
+      );
+    });
+  });
+};
 
-      break;
+export const deleteImage = async (req: Req, res: Resp) => {
+  const { img, userId } = req.params;
+  sendEmail({
+    from: '"Fred Foo 👻" <foo@example.com>', // sender address
+    to: "bar@example.com, baz@example.com", // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: "Hello world?", // plain text body
+    html: "<b>Enviado cuando se borra</b>", // html body
+  }).catch(console.error);
 
-    default:
-      return res.status(500).json({
-        ok: false,
-        msg: "I forgot to validate this",
+  fs.unlink(path.join(__dirname, `../../uploads/images/${userId}/${img}`))
+    .then(() => {
+      console.log(`File deleted: ${img}`);
+      res.status(200).json({
+        ok: true,
+        msg: "Successfully image delete",
         result: {},
       });
-  }
-
-  // Limpiar imágenes previas
-  if (model.img) {
-    // Hay que borrar la imagen del servidor
-    const imagePath = path.join(__dirname, "../uploads", colection, model.img);
-    if (fs.existsSync(imagePath)) {
-      fs.unlinkSync(imagePath);
-    }
-  }
-
-  const name = await uploadFiles(req.files, colection);
-  model.img = name;
-
-  await model.save();
-
-  return res.json(model);
-};
-
-export const showImage = async (req: Request, res: Response) => {
-  const { id, colection } = req.params;
-
-  let model;
-
-  switch (colection) {
-    case "users":
-      model = await User.findById(id);
-      if (!model) {
-        return res.status(400).json({
-          msg: `There is no user with the id ${id}`,
-        });
-      }
-
-      break;
-
-    default:
-      return res.status(500).json({ msg: "I forgot to validate this" });
-  }
-
-  // Limpiar imágenes previas
-  if (model.img) {
-    // Hay que borrar la imagen del servidor
-    const imagePath = path.join(__dirname, "../uploads", colection, model.img);
-    if (fs.existsSync(imagePath)) {
-      return res.sendFile(imagePath);
-    }
-  }
-
-  const imagePath = path.join(__dirname, "../assets/no-image.jpg");
-  return res.sendFile(imagePath);
+    })
+    .catch((error: any) => {
+      console.log(error);
+    });
 };
