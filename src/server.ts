@@ -48,9 +48,10 @@ export class Server {
     this.app.use(express.json());
 
     // statics Directories
-    this.app.use("/public", express.static(__dirname + "/public"));
-    this.app.use("/images", express.static(__dirname + "/uploads/images"));
-    this.app.use("/docs", express.static(__dirname + "/uploads/docs"));
+    this.app.use(express.static("public"));
+    this.app.use(express.static("uploads"));
+    //this.app.use("/public", express.static(__dirname + "/public"));
+    //this.app.use("/uploads", express.static(__dirname + "/uploads"));
 
     // Swagger integration
     this.app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(options));

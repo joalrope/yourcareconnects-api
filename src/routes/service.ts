@@ -8,13 +8,19 @@ import {
   updateService,
   deleteService,
   getServices,
+  getServiceColor,
+  setServicesColor,
 } from "../controllers";
 
 export const serviceRouter = Router();
 
 serviceRouter.post(
   "/",
-  [body("title", "The title is required").not().isEmpty(), validateFields],
+  [
+    validateJWT,
+    body("title", "The title is required").not().isEmpty(),
+    validateFields,
+  ],
   createService
 );
 
@@ -22,13 +28,14 @@ serviceRouter.get("/", getServices);
 
 serviceRouter.get(
   "/:id",
-  [check("id", "Not a valid ID").isMongoId(), validateFields],
+  [validateJWT, check("id", "Not a valid ID").isMongoId(), validateFields],
   getService
 );
 
 serviceRouter.put(
   "/",
   [
+    validateJWT,
     body("parent", "The parent is required").not().isEmpty(),
     body("title", "The title is required").not().isEmpty(),
   ],
@@ -45,3 +52,6 @@ serviceRouter.delete(
   ],
   deleteService
 );
+
+serviceRouter.post("/get-colors", [validateJWT], getServiceColor);
+serviceRouter.post("/set-colors", [validateJWT], setServicesColor);

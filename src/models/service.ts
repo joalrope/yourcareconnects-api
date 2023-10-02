@@ -5,7 +5,7 @@ export interface IService extends Document {
   title: string;
   value: string;
   children?: object[];
-  tagColor: object;
+  tagColor: string;
   isDeleted: boolean;
 }
 
@@ -22,11 +22,8 @@ const ChildrenSchema = new Schema<IService>(
       type: [Object],
     },
     tagColor: {
-      type: Object,
-      default: {
-        bgc: "#" + Math.floor(Math.random() * 16777215).toString(16),
-        frc: "#" + Math.floor(Math.random() * 16777215).toString(16),
-      },
+      type: String,
+      default: "#" + Math.floor(Math.random() * 16777215).toString(16),
     },
     isDeleted: {
       type: Boolean,
@@ -51,11 +48,8 @@ const ServiceSchema = new Schema<IService>(
       type: [ChildrenSchema],
     },
     tagColor: {
-      type: Object,
-      default: {
-        bgc: "#" + Math.floor(Math.random() * 16777215).toString(16),
-        frc: "#" + Math.floor(Math.random() * 16777215).toString(16),
-      },
+      type: String,
+      default: "#" + Math.floor(Math.random() * 16777215).toString(16),
     },
     isDeleted: {
       type: Boolean,

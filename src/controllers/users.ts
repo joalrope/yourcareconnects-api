@@ -99,7 +99,6 @@ export const createUser = async (req: Request, res: Response) => {
   }
 
   if (userDB!) {
-    console.log(userDB);
     response = {
       ok: false,
       msg: `There is already a user with the email: ${email}`,
@@ -191,8 +190,6 @@ export const updateUser = async (req: Request, res: Response) => {
     services,
     serviceModality,
   } = req.body;
-
-  console.log(req.body);
 
   try {
     const user = await User.findByIdAndUpdate(

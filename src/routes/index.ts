@@ -6,9 +6,11 @@ import { userRouter } from "./users";
 import { roleRouter } from "./roles";
 import { authRouter } from "./auth";
 import { i18nRouter } from "./i18n";
+import { modalityRouter } from "./modality";
 
 interface Paths {
   services: string;
+  modality: string;
   uploads: string;
   search: string;
   users: string;
@@ -19,6 +21,7 @@ interface Paths {
 
 const paths: Paths = {
   services: "/api/services",
+  modality: "/api/modalities",
   uploads: "/api/uploads",
   search: "/api/search",
   users: "/api/users",
@@ -29,6 +32,7 @@ const paths: Paths = {
 
 export const apiRoutes = (app: Express) => {
   app.use(paths.services, serviceRouter);
+  app.use(paths.modality, modalityRouter);
   app.use(paths.uploads, uploadRouter);
   app.use(paths.search, searchRouter);
   app.use(paths.users, userRouter);

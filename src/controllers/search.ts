@@ -11,9 +11,6 @@ const collectionsAllowed = ["users", "services"];
 export const searchUser = async (id = "", res: Response) => {
   const isMongoID = isValidObjectId(id); // TRUE
 
-  console.log("entrando en searchUser!!!!!!!!!");
-  console.log({ isMongoID });
-
   let user: IUser = {} as IUser & mongoose.Document;
   let users: IUser[] = [];
 
@@ -38,8 +35,6 @@ export const searchUser = async (id = "", res: Response) => {
       results: user,
     });
   }
-
-  console.log("regex");
 
   const regex = new RegExp(id, "i");
 
@@ -76,9 +71,6 @@ export const searchUser = async (id = "", res: Response) => {
 
 export const searchService = async (id = "", res: Response) => {
   const isMongoID = isValidObjectId(id); // TRUE
-
-  console.log("entrando en searchService!!!");
-  console.log({ isMongoID });
 
   let service: IService = {} as IService & mongoose.Document;
 

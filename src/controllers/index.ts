@@ -16,7 +16,17 @@ export {
   createService,
   updateService,
   deleteService,
+  getServiceColor,
+  setServicesColor,
 } from "./services";
+
+export {
+  getModalities,
+  getModality,
+  createModality,
+  updateModality,
+  deleteModality,
+} from "./modality";
 export { getRoles, getRole, createRole, deleteRole } from "./roles";
 export { changePassword, forgotPassword, login } from "./auth";
 export { geti18n } from "./i18n";

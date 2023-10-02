@@ -22,8 +22,6 @@ export const uploadImage = async (_req: Req, res: Resp) => {
 export const getImage = async (req: Req, res: Resp) => {
   const { img, userId } = req.params;
 
-  console.log({ img, userId });
-
   const url = path.join(__dirname, `../../uploads/images/${userId}/${img}`);
   res.sendFile(url);
 };
@@ -98,7 +96,6 @@ export const deleteImage = async (req: Req, res: Resp) => {
 
   fs.unlink(path.join(__dirname, `../../uploads/images/${userId}/${img}`))
     .then(() => {
-      console.log(`File deleted: ${img}`);
       res.status(200).json({
         ok: true,
         msg: "Successfully image delete",

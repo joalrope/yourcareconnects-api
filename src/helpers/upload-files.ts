@@ -5,7 +5,6 @@ export const uploadFiles = (files: any, uid: string) => {
   return new Promise((resolve, reject) => {
     const { fileName } = files;
 
-    console.log({ fileName });
     const splitedName = fileName.name.split(".");
     const extension = splitedName[splitedName.length - 1];
 

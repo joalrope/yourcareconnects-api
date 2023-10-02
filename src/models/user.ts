@@ -24,6 +24,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   phoneNumber: string;
+  biography?: string;
   balance?: number;
   points?: number;
   role: string;
@@ -37,6 +38,7 @@ export interface IUser extends Document {
   company?: string;
   owner?: string;
   webUrl?: string;
+  ratings?: number;
   services?: string[];
   serviceModality?: string[];
   certificates?: string[];
@@ -64,6 +66,9 @@ const UserSchema = new Schema<IUser>(
     phoneNumber: {
       type: String,
       required: [true, "The phonenumber is required"],
+    },
+    biography: {
+      type: String,
     },
     balance: {
       type: Number,

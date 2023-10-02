@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 
-import { Service } from "../models/index";
+import { IService, Service } from "../models/index";
+import { getColorHex, setColorHex } from "../helpers";
+import { IRes } from "../helpers/color-hex";
 
 export const getServices = async (_req: Request, res: Response) => {
   //
@@ -82,7 +84,7 @@ export const createService = async (req: Request, res: Response) => {
     const service = new Service({
       title,
       value: title,
-      tagColor: { bgc: color, frc: color },
+      tagColor: color,
     });
 
     // Guardar en BD
@@ -105,8 +107,6 @@ export const createService = async (req: Request, res: Response) => {
 export const updateService = async (req: Request, res: Response) => {
   const { parent, title, color } = req.body;
 
-  console.log({ parent, title, color });
-
   try {
     if (!parent.includes(".") && parent.split(".").length === 1) {
       const updatedService = await Service.findOneAndUpdate(
@@ -116,7 +116,7 @@ export const updateService = async (req: Request, res: Response) => {
             children: {
               title,
               value: title,
-              tagColor: { bgc: color, frc: color },
+              tagColor: color,
             },
           },
         },
@@ -145,7 +145,7 @@ export const updateService = async (req: Request, res: Response) => {
             "children.$.children": {
               title,
               value: title,
-              tagColor: { bgc: color, frc: color },
+              tagColor: color,
             },
           },
         }
@@ -167,7 +167,7 @@ export const updateService = async (req: Request, res: Response) => {
           "children.$[child].children": {
             title,
             value: title,
-            tagColor: { bgc: color, frc: color },
+            tagColor: color,
           },
         },
       },
@@ -219,4 +219,75 @@ export const deleteService = async (req: Request, res: Response) => {
       result: { error },
     });
   }
+};
+
+export const getServiceColor = async (req: Request, res: Response) => {
+  const { services } = req.body;
+
+  let result: IRes[] = [];
+  let servicesDB;
+
+  try {
+    servicesDB = await Service.find();
+  } catch (error) {
+    console.log(error);
+    return services;
+  }
+
+  for (const serv of services) {
+    const title = serv.split("|").pop() as string;
+
+    const servData: IRes[] = getColorHex(servicesDB, title);
+
+    result.push(servData[0]);
+  }
+
+  if (result.length === 0) {
+    return res.status(400).json({
+      ok: false,
+      msg: "Couldn't get services, don't exist",
+      result,
+    });
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "servicesWithColor get successfully",
+    result,
+  });
+};
+
+export const setServicesColor = async (_req: Request, res: Response) => {
+  let result: IService[] = [];
+
+  try {
+    result = await Service.find();
+  } catch (error) {
+    console.log(error);
+    return result;
+  }
+
+  setColorHex(result);
+
+  for (const serv of result) {
+    await Service.findByIdAndUpdate(
+      { _id: serv.id },
+      { ...serv },
+      { new: true }
+    );
+  }
+
+  if (result.length === 0) {
+    return res.status(400).json({
+      ok: false,
+      msg: "Couldn't get services, don't exist",
+      result,
+    });
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "servicesWithColor get successfully",
+    result,
+  });
 };
