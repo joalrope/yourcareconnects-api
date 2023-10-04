@@ -32,7 +32,7 @@ export const searchUser = async (id = "", res: Response) => {
     return res.json({
       ok: true,
       msg: "The user was successfully obtained",
-      results: user,
+      result: user,
     });
   }
 
@@ -58,14 +58,14 @@ export const searchUser = async (id = "", res: Response) => {
     return res.json({
       ok: false,
       msg: "There are no users to display",
-      results: [],
+      result: [],
     });
   }
 
   return res.status(200).json({
     ok: true,
     msg: "The list of users was successfully obtained",
-    results: users!,
+    result: { users: users! },
   });
 };
 
@@ -84,7 +84,7 @@ export const searchService = async (id = "", res: Response) => {
     return res.json({
       ok: true,
       msg: "The list of services was successfully obtained",
-      results: service ? [service] : [],
+      result: service ? [service] : [],
     });
   }
 
@@ -92,7 +92,7 @@ export const searchService = async (id = "", res: Response) => {
   const services = await Service.find({ name: regex, isActive: true });
 
   return res.json({
-    results: services,
+    result: services,
   });
 };
 

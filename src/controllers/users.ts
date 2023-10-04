@@ -141,7 +141,7 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const getUsersByServices = async (req: Request, res: Response) => {
-  const services = req.query.services as string[];
+  let services = req.query.services as string[];
   let response: IResponse;
   let users: IUser[];
 
