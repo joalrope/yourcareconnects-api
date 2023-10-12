@@ -180,34 +180,34 @@ export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const {
-    company,
-    owner,
     address,
-    zipCode,
-    phoneNumber,
+    biography,
+    company,
     faxNumber,
-    webUrl,
+    owner,
+    phoneNumber,
+    pictures,
     services,
     serviceModality,
+    webUrl,
+    zipCode,
   } = req.body;
 
   try {
     const user = await User.findByIdAndUpdate(
       { _id: id },
       {
-        $set: {
-          company,
-          owner,
-          address,
-          zipCode,
-          phoneNumber,
-          faxNumber,
-          webUrl,
-        },
-        $addToSet: {
-          services: [...services],
-          serviceModality: [...serviceModality],
-        },
+        address,
+        biography,
+        company,
+        faxNumber,
+        owner,
+        phoneNumber,
+        pictures,
+        services,
+        serviceModality,
+        webUrl,
+        zipCode,
       },
       {
         new: true,
@@ -219,7 +219,7 @@ export const updateUser = async (req: Request, res: Response) => {
       return res.status(200).json({
         ok: true,
         msg: "User updated successfully",
-        result: user,
+        result: { user },
       });
     }
     return;

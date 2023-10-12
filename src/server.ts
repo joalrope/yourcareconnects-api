@@ -15,13 +15,13 @@ export class Server {
     this.app = express();
     this.port = process.env.PORT || "8080";
 
-    // Conectar a base de datos
+    // Database connection
     this.conectarDB();
 
     // Middlewares
     this.middlewares();
 
-    // Rutas de mi aplicación
+    // Application routes
     this.routes = apiRoutes(this.app);
 
     this.app.use(function (_, res) {
@@ -50,8 +50,6 @@ export class Server {
     // statics Directories
     this.app.use(express.static("public"));
     this.app.use(express.static("uploads"));
-    //this.app.use("/public", express.static(__dirname + "/public"));
-    //this.app.use("/uploads", express.static(__dirname + "/uploads"));
 
     // Swagger integration
     this.app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(options));

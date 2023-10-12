@@ -11,7 +11,6 @@ export const getModalities = async (_req: Request, res: Response) => {
       //Modality.find().skip(Number(from)).limit(Number(limit)),
       Modality.find(),
     ]);
-    console.log({ modalities });
 
     return res.status(200).json({
       ok: true,

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { uploader } from "../middlewares/multer";
 import {
-  deleteImage,
+  //deleteImage,
   getImage,
   getImages,
   uploadImage,
@@ -12,7 +12,7 @@ export const uploadRouter = Router();
 
 uploadRouter.use(validateJWT);
 
-uploadRouter.post("/", uploader, uploadImage);
+uploadRouter.post("/:fullFileName", uploader, uploadImage);
 uploadRouter.get("/images", [], getImages);
 uploadRouter.get("/user/:userId/img/:img", [], getImage);
-uploadRouter.delete("/user/:userId/img/:img", [], deleteImage);
+//uploadRouter.delete("/user/:userId/img/:img", [], deleteImage);

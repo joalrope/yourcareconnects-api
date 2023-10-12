@@ -1,9 +1,11 @@
 import { Request as Req, Response as Resp } from "express";
 import { glob } from "glob";
 import path from "path";
-import { sendEmail } from "../helpers";
+import fs from "fs";
+//import { sendEmail } from "../helpers";
 import { User } from "../models";
-const fs = require("fs").promises;
+import { jwtParse } from "../helpers/jwt";
+//const fs = require("fs").promises;
 
 interface imgData {
   id: string;
@@ -12,10 +14,35 @@ interface imgData {
   image: string;
 }
 
-export const uploadImage = async (_req: Req, res: Resp) => {
-  res.status(200).json({
+export const uploadImage = async (req: Req, res: Resp) => {
+  const { fullFileName } = req.params;
+  const token = req.headers["x-token"];
+  const { uid } = jwtParse(token);
+
+  let user;
+
+  try {
+    user = await User.findByIdAndUpdate(
+      { _id: uid },
+      {
+        "pictures.profile": fullFileName,
+      },
+      {
+        new: true,
+        strict: false,
+      }
+    );
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      msg: "Please talk to the administrator",
+      result: { error },
+    });
+  }
+  return res.status(200).json({
     ok: true,
     msg: "Successfully uploaded files",
+    result: { user },
   });
 };
 
@@ -23,7 +50,20 @@ export const getImage = async (req: Req, res: Resp) => {
   const { img, userId } = req.params;
 
   const url = path.join(__dirname, `../../uploads/images/${userId}/${img}`);
-  res.sendFile(url);
+
+  if (fs.existsSync(url)) {
+    return res.status(200).json({
+      ok: true,
+      msg: "Image found",
+      result: { url: `/images/${userId}/${img}` },
+    });
+  } else {
+    return res.status(409).json({
+      ok: false,
+      msg: "Image not found",
+      result: { url: "/images/man.png" },
+    });
+  }
 };
 
 export const getImages = async (_req: Req, res: Resp) => {
@@ -84,7 +124,7 @@ const searchImages = (pattern: string): Promise<string[][]> => {
   });
 };
 
-export const deleteImage = async (req: Req, res: Resp) => {
+/*export const deleteImage = async (req: Req, res: Resp) => {
   const { img, userId } = req.params;
   sendEmail({
     from: '"Fred Foo 👻" <foo@example.com>', // sender address
@@ -105,4 +145,4 @@ export const deleteImage = async (req: Req, res: Resp) => {
     .catch((error: any) => {
       console.log(error);
     });
-};
+};*/
