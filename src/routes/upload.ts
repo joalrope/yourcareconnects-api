@@ -4,7 +4,7 @@ import {
   //deleteImage,
   getImage,
   getImages,
-  uploadImage,
+  uploadProfileImage,
 } from "../controllers/uploads";
 import { validateJWT } from "../middlewares/validate-jwt";
 
@@ -12,7 +12,7 @@ export const uploadRouter = Router();
 
 uploadRouter.use(validateJWT);
 
-uploadRouter.post("/:fullFileName", uploader, uploadImage);
+uploadRouter.post("/profile/:fullFileName", uploader, uploadProfileImage);
 uploadRouter.get("/images", [], getImages);
 uploadRouter.get("/user/:userId/img/:img", [], getImage);
 //uploadRouter.delete("/user/:userId/img/:img", [], deleteImage);

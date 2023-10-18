@@ -2,10 +2,9 @@ import { Request as Req, Response as Resp } from "express";
 import { glob } from "glob";
 import path from "path";
 import fs from "fs";
-//import { sendEmail } from "../helpers";
 import { User } from "../models";
 import { jwtParse } from "../helpers/jwt";
-//const fs = require("fs").promises;
+import { delFilesOnDir } from "../helpers/delFilesOnDir";
 
 interface imgData {
   id: string;
@@ -14,12 +13,27 @@ interface imgData {
   image: string;
 }
 
-export const uploadImage = async (req: Req, res: Resp) => {
+export const uploadProfileImage = async (req: Req, res: Resp) => {
   const { fullFileName } = req.params;
   const token = req.headers["x-token"];
   const { uid } = jwtParse(token);
 
   let user;
+  let oldProfilePicture;
+
+  try {
+    user = await User.findById(uid);
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      msg: "Please talk to the administrator",
+      result: { error },
+    });
+  }
+
+  if (user) {
+    oldProfilePicture = user.pictures.profile;
+  }
 
   try {
     user = await User.findByIdAndUpdate(
@@ -39,9 +53,14 @@ export const uploadImage = async (req: Req, res: Resp) => {
       result: { error },
     });
   }
+
+  const dir = path.join(__dirname, `../../uploads/images/${uid}`);
+
+  delFilesOnDir(dir, oldProfilePicture);
+
   return res.status(200).json({
     ok: true,
-    msg: "Successfully uploaded files",
+    msg: "Successfully uploaded Image Profile",
     result: { user },
   });
 };
@@ -123,26 +142,3 @@ const searchImages = (pattern: string): Promise<string[][]> => {
     });
   });
 };
-
-/*export const deleteImage = async (req: Req, res: Resp) => {
-  const { img, userId } = req.params;
-  sendEmail({
-    from: '"Fred Foo 👻" <foo@example.com>', // sender address
-    to: "bar@example.com, baz@example.com", // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "Hello world?", // plain text body
-    html: "<b>Enviado cuando se borra</b>", // html body
-  }).catch(console.error);
-
-  fs.unlink(path.join(__dirname, `../../uploads/images/${userId}/${img}`))
-    .then(() => {
-      res.status(200).json({
-        ok: true,
-        msg: "Successfully image delete",
-        result: {},
-      });
-    })
-    .catch((error: any) => {
-      console.log(error);
-    });
-};*/
