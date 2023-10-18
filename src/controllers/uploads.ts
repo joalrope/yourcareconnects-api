@@ -65,6 +65,20 @@ export const uploadProfileImage = async (req: Req, res: Resp) => {
   });
 };
 
+export const uploadDocs = async (req: Req, res: Resp) => {
+  const { fullFileName } = req.params;
+  const token = req.headers["x-token"];
+  const { uid } = jwtParse(token);
+
+  console.log({ fullFileName, uid });
+
+  return res.status(200).json({
+    ok: true,
+    msg: "Successfully uploaded Docs",
+    result: {},
+  });
+};
+
 export const getImage = async (req: Req, res: Resp) => {
   const { img, userId } = req.params;
 
