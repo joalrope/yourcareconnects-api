@@ -9,7 +9,6 @@ export const getServices = async (_req: Request, res: Response) => {
   try {
     const [total, services] = await Promise.all([
       Service.countDocuments(),
-      //Service.find().skip(Number(from)).limit(Number(limit)),
       Service.find(),
     ]);
 
@@ -223,6 +222,14 @@ export const deleteService = async (req: Request, res: Response) => {
 
 export const getServiceColor = async (req: Request, res: Response) => {
   const { services } = req.body;
+
+  if (services.length === 0) {
+    return res.status(400).json({
+      ok: false,
+      msg: "Couldn't get services, don't exist",
+      result: [],
+    });
+  }
 
   let result: IRes[] = [];
   let servicesDB;

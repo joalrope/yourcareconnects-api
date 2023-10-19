@@ -106,9 +106,11 @@ const UserSchema = new Schema<IUser>(
     },
     services: {
       type: [String],
+      default: [],
     },
     serviceModality: {
       type: [String],
+      default: [],
     },
     certificates: {
       type: [String],
