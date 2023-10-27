@@ -1,6 +1,8 @@
 import express, { Express } from "express";
+import { createServer } from "http";
 import cors from "cors";
 import { dbConnection } from "./database/config";
+import { setupSockets } from "./socket/socket";
 import swaggerUI from "swagger-ui-express";
 //import { swaggerStart } from "./docs/swagger-start";
 import { options } from "./docs/index";
@@ -9,10 +11,11 @@ import { apiRoutes } from "./routes";
 export class Server {
   app: Express;
   port: string | undefined;
-  routes: any;
+  server: any;
 
   constructor() {
     this.app = express();
+    this.server = createServer(this.app);
     this.port = process.env.PORT || "8080";
 
     // Database connection
@@ -22,11 +25,10 @@ export class Server {
     this.middlewares();
 
     // Application routes
-    this.routes = apiRoutes(this.app);
+    apiRoutes(this.app);
 
-    this.app.use(function (_, res) {
-      res.redirect("/");
-    });
+    // WebSocket
+    setupSockets(this.server);
   }
 
   async conectarDB() {
@@ -35,12 +37,13 @@ export class Server {
 
   middlewares() {
     // CORS
+    const origin = [
+      "http://localhost:3000",
+      "https://yourcareconnects-app.onrender.com",
+    ];
     this.app.use(
       cors({
-        origin: [
-          "http://localhost:3000",
-          "https://yourcareconnects-app.onrender.com",
-        ],
+        origin,
       })
     );
 
@@ -56,7 +59,7 @@ export class Server {
   }
 
   listen() {
-    this.app.listen(this.port, () => {
+    this.server.listen(this.port, () => {
       console.log("Servidor corriendo en puerto", this.port);
       //swaggerStart();
     });

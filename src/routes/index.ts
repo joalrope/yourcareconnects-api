@@ -1,4 +1,4 @@
-import { Express } from "express";
+import { Express, Response } from "express";
 import { serviceRouter } from "./service";
 import { uploadRouter } from "./upload";
 import { searchRouter } from "./search";
@@ -39,4 +39,7 @@ export const apiRoutes = (app: Express) => {
   app.use(paths.roles, roleRouter);
   app.use(paths.i18n, i18nRouter);
   app.use(paths.auth, authRouter);
+  app.use(function (_, res: Response) {
+    res.redirect("/");
+  });
 };
