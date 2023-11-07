@@ -16,11 +16,17 @@ const resetPassword = new Schema<IResetPassword>({
   },
 });
 
+interface ILocation {
+  lat: { type: Number; default: 0 };
+  lng: { type: Number; default: 0 };
+}
+
 export interface IUser extends Document {
   id?: string;
   uid: mongoose.Types.ObjectId;
   names: string;
   lastName: string;
+  fullname?: string;
   email: string;
   password: string;
   phoneNumber: string;
@@ -31,6 +37,7 @@ export interface IUser extends Document {
   isDeleted: boolean;
   notifications?: number;
   address?: string;
+  location: ILocation;
   resetPassword?: IResetPassword;
   zipCode?: string;
   faxNumber?: string;
@@ -84,6 +91,16 @@ const UserSchema = new Schema<IUser>(
     },
     address: {
       type: String,
+    },
+    location: {
+      lat: {
+        type: Number,
+        default: 0,
+      },
+      lng: {
+        type: Number,
+        default: 0,
+      },
     },
     zipCode: {
       type: String,
@@ -144,8 +161,9 @@ UserSchema.pre("findOne", function () {
 });
 
 UserSchema.methods.toJSON = function () {
-  const { __v, password, _id, ...user } = this.toObject();
+  const { __v, password, _id, names, lastName, ...user } = this.toObject();
   user.id = _id;
+  user.fullname = `${names} ${lastName}`;
   return user;
 };
 

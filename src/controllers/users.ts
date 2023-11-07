@@ -147,6 +147,7 @@ export const getUsersByServices = async (req: Request, res: Response) => {
 
   try {
     users = await User.find({
+      role: "provider",
       services: {
         $in: [...services],
       },
@@ -184,6 +185,7 @@ export const updateUser = async (req: Request, res: Response) => {
     biography,
     company,
     faxNumber,
+    location,
     owner,
     phoneNumber,
     services,
@@ -200,6 +202,7 @@ export const updateUser = async (req: Request, res: Response) => {
         biography,
         company,
         faxNumber,
+        location,
         owner,
         phoneNumber,
         services,
