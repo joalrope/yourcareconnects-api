@@ -233,6 +233,71 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+export const updateUserContacts = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { contact } = req.body;
+
+  let contacts;
+
+  try {
+    contacts = await User.find({
+      contacts: {
+        $in: [contact],
+      },
+    });
+
+    if (contacts.length > 0) {
+      return res.status(409).json({
+        ok: false,
+        msg: `The contact ${contact} already exists in the list of contacts`,
+        result: {},
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      msg: "Please talk to the administrator",
+      result: { error },
+    });
+  }
+
+  if (contacts.length === 0) {
+    let user;
+
+    try {
+      user = await User.findByIdAndUpdate(
+        { _id: id },
+        {
+          $push: { contacts: contact },
+        },
+        {
+          new: true,
+          strict: false,
+        }
+      );
+
+      return res.status(200).json({
+        ok: true,
+        msg: "The contact has been added successfully",
+        result: {
+          user,
+        },
+      });
+    } catch (error) {
+      return res.status(500).json({
+        ok: false,
+        msg: "Please talk to the administrator",
+        result: { error },
+      });
+    }
+  }
+  return res.status(409).json({
+    ok: false,
+    msg: "The contact cannot be added",
+    result: {},
+  });
+};
+
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 

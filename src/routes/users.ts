@@ -11,6 +11,7 @@ import {
   deleteUser,
   getUsersByServices,
 } from "../controllers";
+import { updateUserContacts } from "../controllers/users";
 
 export const userRouter = Router();
 
@@ -63,4 +64,18 @@ userRouter.delete(
     validateFields,
   ],
   deleteUser
+);
+
+userRouter.put(
+  "/contacts/:id",
+  [
+    validateJWT,
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID").isMongoId(),
+    check("id").custom(userIdAlreadyExists),
+    body("contact", "The contact is required").not().isEmpty(),
+    body("contact", "The contact is invalid").isEmail(),
+    validateFields,
+  ],
+  updateUserContacts
 );

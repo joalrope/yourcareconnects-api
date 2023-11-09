@@ -16,6 +16,10 @@ export function setupSockets(server: any) {
       console.log("socket id: ", socket.id, "socket connected status: ", data);
     });
 
+    socket.on("sendMessage", (data) => {
+      console.log("sendMessage: ", data);
+    });
+
     socket.on("disconnect", () => {
       console.log("Client disconnected", socket.id);
     });

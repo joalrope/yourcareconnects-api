@@ -22,33 +22,34 @@ interface ILocation {
 }
 
 export interface IUser extends Document {
-  id?: string;
-  uid: mongoose.Types.ObjectId;
-  names: string;
-  lastName: string;
-  fullname?: string;
+  address?: string;
+  balance?: number;
+  biography?: string;
+  company?: string;
+  contacts?: string[];
+  certificates?: string[];
   email: string;
+  faxNumber?: string;
+  fullname?: string;
+  id?: string;
+  isDeleted: boolean;
+  lastName: string;
+  location: ILocation;
+  names: string;
+  notifications?: number;
+  owner?: string;
   password: string;
   phoneNumber: string;
-  biography?: string;
-  balance?: number;
-  points?: number;
-  role: string;
-  isDeleted: boolean;
-  notifications?: number;
-  address?: string;
-  location: ILocation;
-  resetPassword?: IResetPassword;
-  zipCode?: string;
-  faxNumber?: string;
   pictures?: Object;
-  company?: string;
-  owner?: string;
-  webUrl?: string;
+  points?: number;
   ratings?: number;
+  resetPassword?: IResetPassword;
+  role: string;
   services?: string[];
   serviceModality?: string[];
-  certificates?: string[];
+  uid: mongoose.Types.ObjectId;
+  webUrl?: string;
+  zipCode?: string;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -115,6 +116,10 @@ const UserSchema = new Schema<IUser>(
     company: {
       type: String,
     },
+    contacts: {
+      type: [String],
+      default: [],
+    },
     owner: {
       type: String,
     },
@@ -161,9 +166,10 @@ UserSchema.pre("findOne", function () {
 });
 
 UserSchema.methods.toJSON = function () {
-  const { __v, password, _id, names, lastName, ...user } = this.toObject();
+  const { __v, password, _id, ...user } = this.toObject();
   user.id = _id;
-  user.fullname = `${names} ${lastName}`;
+
+  user.fullname = `${user.names} ${user.lastName}`;
   return user;
 };
 
