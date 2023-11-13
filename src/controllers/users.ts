@@ -237,16 +237,17 @@ export const updateUserContacts = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { contact } = req.body;
 
-  let contacts;
+  let user;
 
   try {
-    contacts = await User.find({
+    user = await User.find({
+      id,
       contacts: {
         $in: [contact],
       },
     });
 
-    if (contacts.length > 0) {
+    if (user.length > 0) {
       return res.status(409).json({
         ok: false,
         msg: `The contact ${contact} already exists in the list of contacts`,
@@ -261,7 +262,7 @@ export const updateUserContacts = async (req: Request, res: Response) => {
     });
   }
 
-  if (contacts.length === 0) {
+  if (user.length === 0) {
     let user;
 
     try {

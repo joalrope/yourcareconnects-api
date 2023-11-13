@@ -1,6 +1,14 @@
 import { Server, Socket } from "socket.io";
 
+interface ConnectedUsers {
+  id: string | string[] | undefined;
+  names: string | string[] | undefined;
+  socketId: string;
+}
+
 export function setupSockets(server: any) {
+  const connectedUsers: ConnectedUsers[] = [];
+
   const io = new Server(server, {
     cors: {
       origin: "http://localhost:3000",
@@ -9,11 +17,22 @@ export function setupSockets(server: any) {
   });
 
   io.on("connection", (socket: Socket) => {
-    console.log("Client connected with id: ", socket.id);
+    const { id, names } = socket.handshake.query;
+
+    if (connectedUsers.some((user) => user.id === id)) {
+      socket.disconnect();
+      return;
+    }
+
+    connectedUsers.push({
+      id,
+      names,
+      socketId: socket.id,
+    });
 
     socket.on("joinRoom", (data) => {
       socket.join(data);
-      console.log("socket id: ", socket.id, "socket connected status: ", data);
+      console.log("sender: ", data, "is connected withsocket id: ", socket.id);
     });
 
     socket.on("sendMessage", (data) => {
@@ -22,6 +41,12 @@ export function setupSockets(server: any) {
 
     socket.on("disconnect", () => {
       console.log("Client disconnected", socket.id);
+      if (connectedUsers.length > 0) {
+        connectedUsers.splice(
+          connectedUsers.findIndex((user) => user.socketId === socket.id),
+          1
+        );
+      }
     });
   });
 }

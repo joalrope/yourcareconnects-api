@@ -74,7 +74,7 @@ userRouter.put(
     check("id", "Not a valid ID").isMongoId(),
     check("id").custom(userIdAlreadyExists),
     body("contact", "The contact is required").not().isEmpty(),
-    body("contact", "The contact is invalid").isEmail(),
+    //body("contact", "The contact is invalid").isEmail(),
     validateFields,
   ],
   updateUserContacts
