@@ -1,13 +1,16 @@
 import { Server, Socket } from "socket.io";
 
-interface ConnectedUsers {
-  id: string | string[] | undefined;
-  names: string | string[] | undefined;
+interface newUsers {
+  names: string;
   socketId: string;
 }
 
+interface connectedUsers {
+  [key: string]: newUsers;
+}
+
 export function setupSockets(server: any) {
-  const connectedUsers: ConnectedUsers[] = [];
+  const connectedUsers: connectedUsers = {};
 
   const io = new Server(server, {
     cors: {
@@ -16,18 +19,45 @@ export function setupSockets(server: any) {
     },
   });
 
+  const clients: string[] = [];
+
   io.on("connection", (socket: Socket) => {
-    const { id, names } = socket.handshake.query;
+    console.log(`client connecting on server with socket id:${socket.id}`);
 
-    if (connectedUsers.some((user) => user.id === id)) {
-      socket.disconnect();
-      return;
-    }
+    clients.push(socket.id);
 
-    connectedUsers.push({
-      id,
-      names,
-      socketId: socket.id,
+    console.log(clients);
+
+    //socket.emit("requestInfo", socket.id);
+
+    /* socket.on("sendData", (data) => {
+      // Manipulate the data here
+      const { id, names, socketId } = data;
+
+      if (id && names) {
+        connectedUsers[id] = {
+          names,
+          socketId,
+        };
+
+        console.log("new user connected", { id, names, socketId: socket.id });
+
+        //io.emit("connectedUsers", connectedUsers);
+      }
+    }); */
+
+    socket.on("signIn", ({ id, names, socketId }) => {
+      if (id && names) {
+        console.log("Client signed in", { id, names, socketId });
+        connectedUsers[id] = {
+          names,
+          socketId,
+        };
+
+        //kkkkk
+
+        io.emit("connectedUsers", connectedUsers);
+      }
     });
 
     socket.on("joinRoom", (data) => {
@@ -36,17 +66,23 @@ export function setupSockets(server: any) {
     });
 
     socket.on("sendMessage", (data) => {
-      console.log("sendMessage: ", data);
+      console.log({ connectedUsers });
+      console.log("sendMessage", data);
+      socket.to(data.receiver.socketId).emit("receiveMessage", data);
     });
 
     socket.on("disconnect", () => {
       console.log("Client disconnected", socket.id);
-      if (connectedUsers.length > 0) {
-        connectedUsers.splice(
-          connectedUsers.findIndex((user) => user.socketId === socket.id),
-          1
-        );
+
+      /* for (var key in connectedUsers) {
+        var objectInKey = connectedUsers[key];
+
+        if (objectInKey["socketId"] === socket.id) {
+          delete connectedUsers[key];
+        }
       }
+      console.log({ connectedUsers });
+      socket.broadcast.emit("connectedUsers", connectedUsers); */
     });
   });
 }
