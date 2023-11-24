@@ -1,4 +1,5 @@
 import { Server, Socket } from "socket.io";
+import { updateUserMessages } from "../controllers";
 
 interface newUsers {
   names: string;
@@ -26,8 +27,6 @@ export function setupSockets(server: any) {
   io.on("connection", (socket: Socket) => {
     socket.on("signIn", ({ id, names, socketId }) => {
       if (id && names && socketId) {
-        console.log("Client signed in", { id, names, socketId });
-
         connectedUsers[id] = {
           names,
           socketId,
@@ -43,26 +42,31 @@ export function setupSockets(server: any) {
     });
 
     socket.on("userIsTyping", ({ isTyping, names }) => {
-      console.log("Client is typing", { isTyping, names });
       socket.broadcast.emit("userIsTyping", { isTyping, names });
     });
 
-    socket.on("sendMessage", (data) => {
-      const { receiverId } = data;
+    socket.on("sendMessage", async (data) => {
+      const { senderId, receiverId } = data;
 
-      const socketId = receiverId ? connectedUsers[receiverId].socketId : "";
+      socket.emit("receiveMessage", data);
 
-      if (!socketId) {
-        socket.emit("unsentMessage", data);
-        return;
+      await updateUserMessages(senderId, receiverId, data);
+
+      if (connectedUsers.hasOwnProperty(receiverId)) {
+        const socketId = connectedUsers[receiverId].socketId;
+        const receiverMessage = {
+          ...data,
+          direction: "incoming",
+          position: "left",
+        };
+        socket.to(socketId).emit("receiveMessage", receiverMessage);
+        await updateUserMessages(receiverId, senderId, receiverMessage);
+      } else {
+        //TODO: save message in DB to send it later, when user is connected
       }
-
-      socket.to(socketId).emit("receiveMessage", data);
     });
 
     socket.on("disconnect", () => {
-      console.log("Client disconnected", socket.id);
-
       for (let key in connectedUsers) {
         if (connectedUsers[key].socketId === socket.id) {
           delete connectedUsers[key];

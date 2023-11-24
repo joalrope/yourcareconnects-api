@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import bcryptjs from "bcryptjs";
-
 import { IUser, User } from "../models/index";
 import { generateJWT } from "../helpers";
 import { IResponse, returnErrorStatus } from ".";
+import { IMessage } from "../models/user";
 
 export const getUsers = async (req: Request, res: Response) => {
   const { limit = 5, from = 0 } = req.query;
@@ -71,6 +71,36 @@ export const getUser = async (req: Request, res: Response) => {
   };
 
   return res.status(409).json(response);
+};
+
+export const getUserMessages = async (req: Request, res: Response) => {
+  const { id, channel } = req.params;
+
+  const myKey = `id${channel}`;
+
+  let messages: { [key: string]: IMessage[] } = {};
+
+  const messagesDB = await User.findOne(
+    {
+      _id: id,
+      [`messages.${myKey}`]: { $exists: true },
+    },
+    { messages: 1 }
+  );
+
+  if (messagesDB.messages) {
+    messages = {
+      [myKey]: messagesDB.messages[myKey],
+    };
+  }
+
+  res.status(200).json({
+    ok: true,
+    msg: "The messages were successfully obtained",
+    result: {
+      messages,
+    },
+  });
 };
 
 export const createUser = async (req: Request, res: Response) => {
@@ -186,6 +216,7 @@ export const updateUser = async (req: Request, res: Response) => {
     company,
     faxNumber,
     location,
+    messages,
     owner,
     phoneNumber,
     services,
@@ -203,6 +234,7 @@ export const updateUser = async (req: Request, res: Response) => {
         company,
         faxNumber,
         location,
+        messages,
         owner,
         phoneNumber,
         services,
@@ -297,6 +329,41 @@ export const updateUserContacts = async (req: Request, res: Response) => {
     msg: "The contact cannot be added",
     result: {},
   });
+};
+
+export const updateUserMessages = async (
+  id: string,
+  channel: string,
+  messages: IMessage /*req: Request, res: Response*/
+) => {
+  //const { id } = req.params;
+  //const { channel, messages } = req.body;
+
+  try {
+    const myKey = `id${channel}`;
+
+    await User.findOneAndUpdate(
+      { _id: id },
+      { $push: { [`messages.${myKey}`]: messages } }
+    );
+
+    return true;
+
+    /*  return res.status(200).json({
+      ok: true,
+      msg: "The message has been added successfully",
+      result: {
+        user,
+      },
+    }); */
+  } catch (error) {
+    return false;
+    /* return res.status(500).json({
+      ok: false,
+      msg: "Please talk to the administrator",
+      result: { error },
+    }); */
+  }
 };
 
 export const deleteUser = async (req: Request, res: Response) => {

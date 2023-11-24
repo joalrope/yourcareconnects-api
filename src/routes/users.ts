@@ -4,14 +4,16 @@ import { body, check } from "express-validator";
 import { validateFields, validateJWT } from "../middlewares";
 import { emailAlreadyExists, userIdAlreadyExists } from "../helpers";
 import {
+  createUser,
   getUsers,
   getUser,
-  updateUser,
-  createUser,
-  deleteUser,
   getUsersByServices,
+  updateUser,
+  deleteUser,
+  updateUserContacts,
+  //updateUserMessages,
+  getUserMessages,
 } from "../controllers";
-import { updateUserContacts } from "../controllers/users";
 
 export const userRouter = Router();
 
@@ -31,7 +33,7 @@ userRouter.post(
 
 userRouter.get("/", getUsers);
 userRouter.get("/services/", getUsersByServices);
-
+userRouter.get("/messages/:id/:channel", getUserMessages);
 userRouter.get(
   "/:id",
   [
@@ -54,18 +56,6 @@ userRouter.put(
   updateUser
 );
 
-userRouter.delete(
-  "/:id",
-  [
-    validateJWT,
-    check("id", "You must provide an ID").notEmpty(),
-    check("id", "Not a valid ID ").isMongoId(),
-    check("id").custom(userIdAlreadyExists),
-    validateFields,
-  ],
-  deleteUser
-);
-
 userRouter.put(
   "/contacts/:id",
   [
@@ -78,4 +68,30 @@ userRouter.put(
     validateFields,
   ],
   updateUserContacts
+);
+
+userRouter.put(
+  "/messages/:id",
+  [
+    validateJWT,
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID").isMongoId(),
+    check("id").custom(userIdAlreadyExists),
+    body("messages", "Messages is required").not().isEmpty(),
+    //body("contact", "The contact is invalid").isEmail(),
+    validateFields,
+  ]
+  //updateUserMessages
+);
+
+userRouter.delete(
+  "/:id",
+  [
+    validateJWT,
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID ").isMongoId(),
+    check("id").custom(userIdAlreadyExists),
+    validateFields,
+  ],
+  deleteUser
 );

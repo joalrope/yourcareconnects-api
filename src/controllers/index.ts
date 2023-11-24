@@ -6,8 +6,11 @@ export {
   getUsers,
   getUser,
   getUsersByServices,
+  getUserMessages,
   createUser,
   updateUser,
+  updateUserContacts,
+  updateUserMessages,
   deleteUser,
 } from "./users";
 export {

@@ -21,6 +21,77 @@ interface ILocation {
   lng: { type: Number; default: 0 };
 }
 
+export enum IMessageType {
+  AUDIO = "audio",
+  FILE = "file",
+  IMAGE = "image",
+  TEXT = "text",
+  VIDEO = "video",
+}
+
+export enum IMessageDirection {
+  INCOMING = "incoming",
+  OUTGOING = "outgoing",
+}
+
+export enum IMessagePosition {
+  ZERO = 0,
+  ONE = 1,
+  TWO = 2,
+  THREE = 3,
+  SINGLE = "single",
+  FIRST = "first",
+  NORMAL = "normal",
+  LAST = "last",
+}
+
+export interface IMessage extends Document {
+  sender: Schema.Types.ObjectId;
+  receiver: Schema.Types.ObjectId;
+  message: string;
+  sentTime: string;
+  type: IMessageType;
+  direction: IMessageDirection;
+  position: IMessagePosition;
+  senderId: string;
+  receiverId: string;
+  isDeleted: boolean;
+}
+
+/* const MessageSchema = new Schema<IMessage>({
+  sender: {
+    type: Schema.Types.ObjectId,
+  },
+  receiver: {
+    type: Schema.Types.ObjectId,
+  },
+  message: {
+    type: String,
+  },
+  sentTime: {
+    type: String,
+  },
+  type: {
+    type: String,
+  },
+  direction: {
+    type: String,
+  },
+  position: {
+    type: String,
+  },
+  senderId: {
+    type: String,
+  },
+  receiverId: {
+    type: String,
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+}); */
+
 export interface IUser extends Document {
   address?: string;
   balance?: number;
@@ -35,6 +106,7 @@ export interface IUser extends Document {
   isDeleted: boolean;
   lastName: string;
   location: ILocation;
+  messages: Schema.Types.Mixed;
   names: string;
   notifications?: number;
   owner?: string;
@@ -102,6 +174,9 @@ const UserSchema = new Schema<IUser>(
         type: Number,
         default: 0,
       },
+    },
+    messages: {
+      type: Schema.Types.Mixed,
     },
     zipCode: {
       type: String,
