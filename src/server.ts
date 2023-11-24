@@ -38,8 +38,8 @@ export class Server {
   middlewares() {
     // CORS
     const origin = [
-      //"http://localhost:3000",
-      "https://yourcareconnects-app.onrender.com",
+      "http://localhost:3000",
+      //"https://yourcareconnects-app.onrender.com",
     ];
     this.app.use(
       cors({
