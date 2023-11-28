@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcryptjs from "bcryptjs";
 import { IUser, User } from "../models/index";
 import { generateJWT } from "../helpers";
-import { IResponse, returnErrorStatus } from ".";
+import { IResponse, returnErrorStatus } from "../controllers";
 import { IMessage } from "../models/user";
 
 export const getUsers = async (req: Request, res: Response) => {
@@ -78,27 +78,35 @@ export const getUserMessages = async (req: Request, res: Response) => {
 
   const myKey = `id${channel}`;
 
-  let messages: { [key: string]: IMessage[] } = {};
+  // let messages: { [key: string]: IMessage[] } = {};
 
   const messagesDB = await User.findOne(
     {
       _id: id,
       [`messages.${myKey}`]: { $exists: true },
     },
-    { messages: 1 }
+    { _id: 0, messages: 1 }
   );
 
-  if (messagesDB.messages) {
-    messages = {
-      [myKey]: messagesDB.messages[myKey],
-    };
+  if (messagesDB !== null) {
+    const messages = messagesDB.messages[myKey];
+
+    res.status(200).json({
+      ok: true,
+      msg: "The messages were successfully obtained",
+      result: {
+        messages,
+      },
+    });
+
+    return;
   }
 
-  res.status(200).json({
-    ok: true,
-    msg: "The messages were successfully obtained",
+  res.status(409).json({
+    ok: false,
+    msg: "There is not messages yet",
     result: {
-      messages,
+      messages: [],
     },
   });
 };
@@ -265,6 +273,59 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+export const incrementUserNotifications = async (
+  id: string,
+  receiverId: string
+) => {
+  try {
+    const notifications = await User.findByIdAndUpdate(
+      { _id: receiverId, [`notifications.id${id}`]: { $exists: true } },
+      { $inc: { [`notifications.id${id}`]: 1 } },
+      { new: true }
+    );
+
+    console.log({ notificationsbe: notifications });
+
+    return notifications;
+  } catch (error) {
+    return false;
+  }
+  return;
+};
+
+export const clearUserNotifications = async (req: Request, res: Response) => {
+  const { id: senderId, receiverId } = req.params;
+
+  let user;
+
+  try {
+    user = await User.findByIdAndUpdate(
+      { _id: receiverId, [`notifications.id${senderId}`]: { $exists: true } },
+      { $set: { [`notifications.id${senderId}`]: 0 } },
+      {
+        new: true,
+        strict: false,
+      }
+    );
+  } catch (error) {
+    return returnErrorStatus(error, res);
+  }
+
+  if (user) {
+    return res.status(200).json({
+      ok: true,
+      msg: "User notifications cleared successfully",
+      result: { user },
+    });
+  }
+
+  return res.status(404).json({
+    ok: false,
+    msg: "Please talk to the administrator",
+    result: {},
+  });
+};
+
 export const updateUserContacts = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { contact } = req.body;
@@ -336,9 +397,6 @@ export const updateUserMessages = async (
   channel: string,
   messages: IMessage /*req: Request, res: Response*/
 ) => {
-  //const { id } = req.params;
-  //const { channel, messages } = req.body;
-
   try {
     const myKey = `id${channel}`;
 
@@ -348,21 +406,8 @@ export const updateUserMessages = async (
     );
 
     return true;
-
-    /*  return res.status(200).json({
-      ok: true,
-      msg: "The message has been added successfully",
-      result: {
-        user,
-      },
-    }); */
   } catch (error) {
     return false;
-    /* return res.status(500).json({
-      ok: false,
-      msg: "Please talk to the administrator",
-      result: { error },
-    }); */
   }
 };
 

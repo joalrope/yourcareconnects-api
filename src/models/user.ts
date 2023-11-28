@@ -108,7 +108,7 @@ export interface IUser extends Document {
   location: ILocation;
   messages: Schema.Types.Mixed;
   names: string;
-  notifications?: number;
+  notifications?: Schema.Types.Mixed;
   owner?: string;
   password: string;
   phoneNumber: string;
@@ -159,8 +159,7 @@ const UserSchema = new Schema<IUser>(
       default: 0,
     },
     notifications: {
-      type: Number,
-      default: 0,
+      type: Schema.Types.Mixed,
     },
     address: {
       type: String,

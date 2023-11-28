@@ -1,5 +1,6 @@
 import { Express, Response } from "express";
 import { serviceRouter } from "./service";
+import { messageRouter } from "./messages";
 import { uploadRouter } from "./upload";
 import { searchRouter } from "./search";
 import { userRouter } from "./users";
@@ -11,6 +12,7 @@ import { modalityRouter } from "./modality";
 interface Paths {
   services: string;
   modality: string;
+  messages: string;
   uploads: string;
   search: string;
   users: string;
@@ -22,6 +24,7 @@ interface Paths {
 const paths: Paths = {
   services: "/api/services",
   modality: "/api/modalities",
+  messages: "/api/messages",
   uploads: "/api/uploads",
   search: "/api/search",
   users: "/api/users",
@@ -33,6 +36,7 @@ const paths: Paths = {
 export const apiRoutes = (app: Express) => {
   app.use(paths.services, serviceRouter);
   app.use(paths.modality, modalityRouter);
+  app.use(paths.messages, messageRouter);
   app.use(paths.uploads, uploadRouter);
   app.use(paths.search, searchRouter);
   app.use(paths.users, userRouter);

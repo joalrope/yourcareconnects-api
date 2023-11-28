@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { updateUserMessages } from "../controllers";
+import { updateUserMessages, incrementUserNotifications } from "../controllers";
 
 interface newUsers {
   names: string;
@@ -15,8 +15,7 @@ const connectedUsers: connectedUsers = {};
 export function setupSockets(server: any) {
   const io = new Server(server, {
     cors: {
-      //origin: "http://localhost:3000",
-      origin: "https://yourcareconnects-app.onrender.com",
+      origin: process.env.URL_BASE,
       methods: ["GET", "POST"],
     },
     connectionStateRecovery: {
@@ -53,18 +52,28 @@ export function setupSockets(server: any) {
 
       await updateUserMessages(senderId, receiverId, data);
 
+      const receiverMessage = {
+        ...data,
+        direction: "incoming",
+        position: "left",
+      };
+
       if (connectedUsers.hasOwnProperty(receiverId)) {
         const socketId = connectedUsers[receiverId].socketId;
-        const receiverMessage = {
-          ...data,
-          direction: "incoming",
-          position: "left",
-        };
+
         socket.to(socketId).emit("receiveMessage", receiverMessage);
-        await updateUserMessages(receiverId, senderId, receiverMessage);
       } else {
-        //TODO: save message in DB to send it later, when user is connected
+        console.log("sending notification");
+        //TODO: send notification
+        const { notifications } = await incrementUserNotifications(
+          senderId,
+          receiverId
+        );
+
+        socket.emit("updateNotifications", notifications[`id${senderId}`]);
       }
+
+      await updateUserMessages(receiverId, senderId, receiverMessage);
     });
 
     socket.on("disconnect", () => {

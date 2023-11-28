@@ -7,10 +7,12 @@ export {
   getUser,
   getUsersByServices,
   getUserMessages,
+  clearUserNotifications,
   createUser,
   updateUser,
   updateUserContacts,
   updateUserMessages,
+  incrementUserNotifications,
   deleteUser,
 } from "./users";
 export {
@@ -30,6 +32,13 @@ export {
   updateModality,
   deleteModality,
 } from "./modality";
+
+export {
+  getMessages,
+  getMessage,
+  createMessage,
+  deleteMessage,
+} from "./messages";
 export { getRoles, getRole, createRole, deleteRole } from "./roles";
 export { changePassword, forgotPassword, login } from "./auth";
 export { geti18n } from "./i18n";

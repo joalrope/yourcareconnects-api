@@ -13,6 +13,7 @@ import {
   updateUserContacts,
   //updateUserMessages,
   getUserMessages,
+  clearUserNotifications,
 } from "../controllers";
 
 export const userRouter = Router();
@@ -71,17 +72,18 @@ userRouter.put(
 );
 
 userRouter.put(
-  "/messages/:id",
+  "/notifications/:receiverId/clear/:senderId",
   [
     validateJWT,
     check("id", "You must provide an ID").notEmpty(),
     check("id", "Not a valid ID").isMongoId(),
     check("id").custom(userIdAlreadyExists),
-    body("messages", "Messages is required").not().isEmpty(),
-    //body("contact", "The contact is invalid").isEmail(),
+    check("receiverId", "You must provide an ID").notEmpty(),
+    check("receiverId", "Not a valid ID").isMongoId(),
+    check("receiverId").custom(userIdAlreadyExists),
     validateFields,
-  ]
-  //updateUserMessages
+  ],
+  clearUserNotifications
 );
 
 userRouter.delete(
