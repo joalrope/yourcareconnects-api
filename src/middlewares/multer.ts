@@ -1,5 +1,5 @@
 import fs from "fs";
-//import path from "path";
+import path from "path";
 import { Request } from "express";
 import multer, { FileFilterCallback as FFCB } from "multer";
 import { jwtParse } from "../helpers/jwt";
@@ -9,8 +9,8 @@ const storage = multer.diskStorage({
     const token = req.headers["x-token"];
     const { uid } = jwtParse(token);
     //const dir = `${}./uploads/images/${uid}`;
-    const dir = `/uploads/images/${uid}`;
-    //const dir = path.join(__dirname, `../../uploads/images/${uid}`);
+    //const dir = `/uploads/images/${uid}`;
+    const dir = path.join(__dirname, `../../uploads/images/${uid}`);
 
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });

@@ -279,7 +279,7 @@ export const incrementUserNotifications = async (
 ) => {
   try {
     const notifications = await User.findByIdAndUpdate(
-      { _id: receiverId, [`notifications.id${id}`]: { $exists: true } },
+      { _id: receiverId },
       { $inc: { [`notifications.id${id}`]: 1 } },
       { new: true }
     );

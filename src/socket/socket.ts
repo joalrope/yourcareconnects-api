@@ -70,6 +70,8 @@ export function setupSockets(server: any) {
           receiverId
         );
 
+        console.log({ notifications: notifications[`id${senderId}`] });
+
         socket.emit("updateNotifications", notifications[`id${senderId}`]);
       }
 
