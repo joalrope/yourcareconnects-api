@@ -64,7 +64,7 @@ export function setupSockets(server: any) {
         socket.to(socketId).emit("receiveMessage", receiverMessage);
       } else {
         console.log("sending notification");
-        //TODO: send notification
+        //TODO: send notification verify
         const { notifications } = await incrementUserNotifications(
           senderId,
           receiverId

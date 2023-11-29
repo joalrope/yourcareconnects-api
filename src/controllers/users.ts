@@ -294,14 +294,16 @@ export const incrementUserNotifications = async (
 };
 
 export const clearUserNotifications = async (req: Request, res: Response) => {
-  const { id: senderId, receiverId } = req.params;
+  const { senderId, receiverId } = req.params;
+
+  console.log({ senderId, receiverId });
 
   let user;
 
   try {
     user = await User.findByIdAndUpdate(
-      { _id: receiverId, [`notifications.id${senderId}`]: { $exists: true } },
-      { $set: { [`notifications.id${senderId}`]: 0 } },
+      { _id: senderId, [`notifications.id${receiverId}`]: { $exists: true } },
+      { $unset: { [`notifications.id${receiverId}`]: 1 } },
       {
         new: true,
         strict: false,

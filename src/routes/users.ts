@@ -75,9 +75,9 @@ userRouter.put(
   "/notifications/:receiverId/clear/:senderId",
   [
     validateJWT,
-    check("id", "You must provide an ID").notEmpty(),
-    check("id", "Not a valid ID").isMongoId(),
-    check("id").custom(userIdAlreadyExists),
+    check("senderId", "You must provide an ID").notEmpty(),
+    check("senderId", "Not a valid ID").isMongoId(),
+    check("senderId").custom(userIdAlreadyExists),
     check("receiverId", "You must provide an ID").notEmpty(),
     check("receiverId", "Not a valid ID").isMongoId(),
     check("receiverId").custom(userIdAlreadyExists),
