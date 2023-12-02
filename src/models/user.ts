@@ -104,6 +104,7 @@ export interface IUser extends Document {
   fullname?: string;
   id?: string;
   isDeleted: boolean;
+  isActive: boolean;
   lastName: string;
   location: ILocation;
   messages: Schema.Types.Mixed;
@@ -222,6 +223,10 @@ const UserSchema = new Schema<IUser>(
       enum: ["superadmin", "admin", "customer", "provider"],
     },
     isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    isActive: {
       type: Boolean,
       default: false,
     },

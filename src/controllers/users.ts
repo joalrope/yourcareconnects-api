@@ -73,6 +73,48 @@ export const getUser = async (req: Request, res: Response) => {
   return res.status(409).json(response);
 };
 
+export const getInactiveUsers = async (req: Request, res: Response) => {
+  const { limit = 5, from = 0 } = req.query;
+
+  let total: number = 0;
+  let users: IUser[] = [];
+  let response: IResponse;
+
+  try {
+    [total, users] = await Promise.all([
+      User.countDocuments({ isDeleted: false }),
+      User.find(
+        { isActive: false },
+        { email: 1, names: 1, lastName: 1, phoneNumber: 1 }
+      )
+        .skip(Number(from))
+        .limit(Number(limit)),
+    ]);
+  } catch (error) {
+    returnErrorStatus(error, res);
+  }
+
+  if (total > 0 && users.length > 0) {
+    response = {
+      ok: true,
+      msg: "The list of inactive users was successfully obtained",
+      result: {
+        total: total,
+        users: users,
+      },
+    };
+
+    return res.status(200).json(response);
+  }
+
+  response = {
+    ok: false,
+    msg: "Sorry, there are no inactive users to show",
+    result: {},
+  };
+  return res.status(200).json(response);
+};
+
 export const getUserMessages = async (req: Request, res: Response) => {
   const { id, channel } = req.params;
 

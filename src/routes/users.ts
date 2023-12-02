@@ -14,6 +14,7 @@ import {
   //updateUserMessages,
   getUserMessages,
   clearUserNotifications,
+  getInactiveUsers,
 } from "../controllers";
 
 export const userRouter = Router();
@@ -33,6 +34,7 @@ userRouter.post(
 );
 
 userRouter.get("/", getUsers);
+userRouter.get("/inactive", getInactiveUsers);
 userRouter.get("/services/", getUsersByServices);
 userRouter.get("/messages/:id/:channel", getUserMessages);
 userRouter.get(

@@ -7,6 +7,7 @@ export {
   getUser,
   getUsersByServices,
   getUserMessages,
+  getInactiveUsers,
   clearUserNotifications,
   createUser,
   updateUser,
