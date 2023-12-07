@@ -1,24 +1,19 @@
 import mongoose, { Document, model, Schema } from "mongoose";
+import { randomLocation } from "../helpers/randomLocation";
 
 export interface IResetPassword {
   token: string;
   expires: number;
 }
 
-const resetPassword = new Schema<IResetPassword>({
-  token: {
-    type: String,
-    default: "",
-  },
-  expires: {
-    type: Number,
-    default: 0,
-  },
-});
-
 interface ILocation {
-  lat: { type: Number; default: 0 };
-  lng: { type: Number; default: 0 };
+  type: string;
+  coordinates: [number, number];
+}
+
+interface IMultiPolygon {
+  type: string;
+  coordinates: [number, number][][][];
 }
 
 export enum IMessageType {
@@ -107,6 +102,7 @@ export interface IUser extends Document {
   isActive: boolean;
   lastName: string;
   location: ILocation;
+  serviceArea?: IMultiPolygon;
   messages: Schema.Types.Mixed;
   names: string;
   notifications?: Schema.Types.Mixed;
@@ -124,6 +120,38 @@ export interface IUser extends Document {
   webUrl?: string;
   zipCode?: string;
 }
+
+const resetPassword = new Schema<IResetPassword>({
+  token: {
+    type: String,
+    default: "",
+  },
+  expires: {
+    type: Number,
+    default: 0,
+  },
+});
+
+const location = new Schema<ILocation>({
+  type: {
+    type: String,
+    default: "Point",
+  },
+  coordinates: {
+    type: [Number],
+    default: [0, 0],
+  },
+});
+
+const serviceArea = new Schema<IMultiPolygon>({
+  type: {
+    type: String,
+    default: "MultiPolygon",
+  },
+  coordinates: {
+    type: [[[[Number]]]],
+  },
+});
 
 const UserSchema = new Schema<IUser>(
   {
@@ -166,17 +194,21 @@ const UserSchema = new Schema<IUser>(
       type: String,
     },
     location: {
-      lat: {
-        type: Number,
-        default: 0,
+      type: location,
+      default: {
+        type: "Point",
+        coordinates: [
+          parseFloat(String(randomLocation("lng"))),
+          parseFloat(String(randomLocation("lat"))),
+        ],
       },
-      lng: {
-        type: Number,
-        default: 0,
-      },
+    },
+    serviceArea: {
+      type: serviceArea,
     },
     messages: {
       type: Schema.Types.Mixed,
+      default: {},
     },
     zipCode: {
       type: String,
@@ -228,7 +260,11 @@ const UserSchema = new Schema<IUser>(
     },
     isActive: {
       type: Boolean,
-      default: false,
+      default: function () {
+        // tslint:disable-line
+        const _t = this as any;
+        return _t.role === "customer" ? true : false;
+      },
     },
   },
   {

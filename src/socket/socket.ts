@@ -32,6 +32,7 @@ export function setupSockets(server: any) {
           socketId,
         };
 
+        console.log("connectedUsers: ", connectedUsers);
         io.emit("connectedUsers", connectedUsers);
       }
     });

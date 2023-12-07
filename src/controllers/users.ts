@@ -4,6 +4,7 @@ import { IUser, User } from "../models/index";
 import { generateJWT } from "../helpers";
 import { IResponse, returnErrorStatus } from "../controllers";
 import { IMessage } from "../models/user";
+import { randomLocation } from "../helpers/randomLocation";
 
 export const getUsers = async (req: Request, res: Response) => {
   const { limit = 5, from = 0 } = req.query;
@@ -73,8 +74,18 @@ export const getUser = async (req: Request, res: Response) => {
   return res.status(409).json(response);
 };
 
-export const getInactiveUsers = async (req: Request, res: Response) => {
+export const getUsersByIsActive = async (req: Request, res: Response) => {
   const { limit = 5, from = 0 } = req.query;
+  const { typeUser } = req.params;
+  let query = {};
+
+  if (typeUser === "active") {
+    query = { isActive: true, isDeleted: false };
+  } else if (typeUser === "inactive") {
+    query = { isActive: false, isDeleted: false };
+  } else {
+    query = { isDeleted: false };
+  }
 
   let total: number = 0;
   let users: IUser[] = [];
@@ -83,10 +94,13 @@ export const getInactiveUsers = async (req: Request, res: Response) => {
   try {
     [total, users] = await Promise.all([
       User.countDocuments({ isDeleted: false }),
-      User.find(
-        { isActive: false },
-        { email: 1, names: 1, lastName: 1, phoneNumber: 1 }
-      )
+      User.find(query, {
+        email: 1,
+        names: 1,
+        lastName: 1,
+        phoneNumber: 1,
+        isActive: 1,
+      })
         .skip(Number(from))
         .limit(Number(limit)),
     ]);
@@ -154,15 +168,21 @@ export const getUserMessages = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { email, password, picture, address, ...restData } = req.body;
+  const { email, password, ...restData } = req.body;
 
-  let user: IUser;
-  let userDB: IUser;
-  let response: IResponse;
+  let user!: IUser;
+  let userDB!: IUser;
+  let response!: IResponse;
 
   const complement = {
     address: "",
+    biography: "",
     faxNumber: "",
+    location: {
+      type: "Point",
+      coordinates: [randomLocation("lng"), randomLocation("lat")],
+    },
+    messages: { idchatbot: { messages: [] } },
     owner: "",
     picture: "",
     services: [],
@@ -178,7 +198,7 @@ export const createUser = async (req: Request, res: Response) => {
     returnErrorStatus(error, res);
   }
 
-  if (userDB!) {
+  if (userDB) {
     response = {
       ok: false,
       msg: `There is already a user with the email: ${email}`,
@@ -194,36 +214,38 @@ export const createUser = async (req: Request, res: Response) => {
     returnErrorStatus(error, res);
   }
 
+  // Generar el JWT
+  const token = await generateJWT(user.id, user.email, user.role);
+
   // Encriptar la contraseña
   const salt = bcryptjs.genSaltSync();
-  user!.password = bcryptjs.hashSync(password, salt);
+  user.password = bcryptjs.hashSync(password, salt);
 
   // Guardar en BD
   try {
-    await user!.save();
+    await user.save();
   } catch (error) {
     returnErrorStatus(error, res);
   }
-
-  // Generar el JWT
-  const token = await generateJWT(user!.id, user!.email, user!.role);
 
   response = {
     ok: true,
     msg: "User created successfully",
     result: {
       token,
-      user: user!,
+      user: user,
     },
   };
+  res.status(201).json(response);
 
-  return res.status(201).json(response);
+  return;
 };
 
 export const getUsersByServices = async (req: Request, res: Response) => {
+  const { rng, lat, lng } = req.params;
   let services = req.query.services as string[];
   let response: IResponse;
-  let users: IUser[];
+  let users!: IUser[];
 
   try {
     users = await User.find({
@@ -231,17 +253,27 @@ export const getUsersByServices = async (req: Request, res: Response) => {
       services: {
         $in: [...services],
       },
+      location: {
+        $nearSphere: {
+          $geometry: {
+            type: "Point",
+            coordinates: [parseFloat(lng), parseFloat(lat)],
+          },
+          $minDistance: 0,
+          $maxDistance: parseFloat(rng) * 1600,
+        },
+      },
     });
   } catch (error) {
     returnErrorStatus(error, res);
   }
 
-  if (users!.length > 0) {
+  if (users!?.length > 0) {
     response = {
       ok: true,
       msg: "The list of users was successfully obtained",
       result: {
-        users: users!,
+        users,
       },
     };
 
@@ -260,6 +292,8 @@ export const getUsersByServices = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
+  let user!: IUser;
+
   const {
     address,
     biography,
@@ -275,15 +309,18 @@ export const updateUser = async (req: Request, res: Response) => {
     zipCode,
   } = req.body;
 
-  try {
-    const user = await User.findByIdAndUpdate(
-      { _id: id },
-      {
+  let coordinates!: number[];
+
+  if (location) {
+    ({ coordinates } = location);
+  }
+
+  const data = location
+    ? {
         address,
         biography,
         company,
         faxNumber,
-        location,
         messages,
         owner,
         phoneNumber,
@@ -291,21 +328,32 @@ export const updateUser = async (req: Request, res: Response) => {
         serviceModality,
         webUrl,
         zipCode,
-      },
-      {
-        new: true,
-        strict: false,
+        $set: {
+          location: {
+            type: "Point",
+            coordinates: [coordinates[0], coordinates[1]],
+          },
+        },
       }
-    );
+    : {
+        address,
+        biography,
+        company,
+        faxNumber,
+        messages,
+        owner,
+        phoneNumber,
+        services,
+        serviceModality,
+        webUrl,
+        zipCode,
+      };
 
-    if (user) {
-      return res.status(200).json({
-        ok: true,
-        msg: "User updated successfully",
-        result: { user },
-      });
-    }
-    return;
+  try {
+    user = await User.findByIdAndUpdate({ _id: id }, data, {
+      new: true,
+      strict: false,
+    });
   } catch (error) {
     return res.status(500).json({
       ok: false,
@@ -313,6 +361,20 @@ export const updateUser = async (req: Request, res: Response) => {
       result: { error },
     });
   }
+
+  if (!user) {
+    return res.status(409).json({
+      ok: false,
+      msg: "User cannot be updated",
+      result: {},
+    });
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "User updated successfully",
+    result: { user },
+  });
 };
 
 export const incrementUserNotifications = async (
@@ -326,19 +388,14 @@ export const incrementUserNotifications = async (
       { new: true }
     );
 
-    console.log({ notificationsbe: notifications });
-
     return notifications;
   } catch (error) {
     return false;
   }
-  return;
 };
 
 export const clearUserNotifications = async (req: Request, res: Response) => {
   const { senderId, receiverId } = req.params;
-
-  console.log({ senderId, receiverId });
 
   let user;
 
@@ -374,7 +431,7 @@ export const updateUserContacts = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { contact } = req.body;
 
-  let user;
+  let user: IUser[];
 
   try {
     user = await User.find({
@@ -383,19 +440,19 @@ export const updateUserContacts = async (req: Request, res: Response) => {
         $in: [contact],
       },
     });
-
-    if (user.length > 0) {
-      return res.status(409).json({
-        ok: false,
-        msg: `The contact ${contact} already exists in the list of contacts`,
-        result: {},
-      });
-    }
   } catch (error) {
     return res.status(500).json({
       ok: false,
       msg: "Please talk to the administrator",
       result: { error },
+    });
+  }
+
+  if (user.length > 0) {
+    return res.status(409).json({
+      ok: false,
+      msg: `The contact ${contact} already exists in the list of contacts`,
+      result: {},
     });
   }
 
@@ -453,6 +510,33 @@ export const updateUserMessages = async (
   } catch (error) {
     return false;
   }
+};
+
+export const changeActiveUserStatus = async (req: Request, res: Response) => {
+  const { id, value } = req.params;
+
+  let user: IUser = {} as IUser;
+
+  try {
+    user = await User.findOneAndUpdate(
+      { _id: id },
+      { isActive: JSON.parse(value) },
+      {
+        new: true,
+        strict: false,
+      }
+    );
+  } catch (error) {
+    return returnErrorStatus(error, res);
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "User updated successfully",
+    result: {
+      user,
+    },
+  });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {

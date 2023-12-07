@@ -23,16 +23,6 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    // SI el usuario está activo
-    if (user.isDeleted) {
-      res.status(200).json({
-        ok: false,
-        statuscode: 400,
-        msg: "User dont't exist - status: false",
-        result: {},
-      });
-    }
-
     // Verificar la contraseña
     const validPassword = bcryptjs.compareSync(password, user.password);
 
@@ -41,7 +31,48 @@ export const login = async (req: Request, res: Response) => {
         ok: false,
         statuscode: 400,
         msg: "User / Password are not correct - status: false",
-        result: {},
+        result: {
+          user: {
+            isValidPassword: false,
+            names: user.names,
+            lastname: user.lastName,
+            role: user.role,
+          },
+        },
+      });
+    }
+
+    // Verificar si el usuario esta activo
+    if (!user.isActive) {
+      return res.status(200).json({
+        ok: false,
+        statuscode: 400,
+        msg: `The {{role}}: {{names}} {{lastname}}, isn't active - status: false, Your entry is being studied for subsequent approval or rejection. Sorry for the inconvenience caused, this is for the benefit of all users of the platform.`,
+        result: {
+          user: {
+            isActive: false,
+            names: user.names,
+            lastname: user.lastName,
+            role: user.role,
+          },
+        },
+      });
+    }
+
+    // SI el usuario está eliminado
+    if (user.isDeleted) {
+      return res.status(200).json({
+        ok: false,
+        statuscode: 400,
+        msg: "User dont't exist - status: true, Your account has been deleted.",
+        result: {
+          user: {
+            isDeleted: true,
+            names: user.names,
+            lastname: user.lastName,
+            role: user.role,
+          },
+        },
       });
     }
 
