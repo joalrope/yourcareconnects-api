@@ -303,6 +303,7 @@ export const updateUser = async (req: Request, res: Response) => {
     messages,
     owner,
     phoneNumber,
+    pictures,
     services,
     serviceModality,
     webUrl,
@@ -311,43 +312,52 @@ export const updateUser = async (req: Request, res: Response) => {
 
   let coordinates!: number[];
 
+  const preData = {
+    address,
+    biography,
+    company,
+    faxNumber,
+    messages,
+    owner,
+    phoneNumber,
+    services,
+    serviceModality,
+    webUrl,
+    zipCode,
+  };
+
+  let dataLocation!: { type: string; coordinates: number[] };
+  let dataPictures!: object;
+
   if (location) {
     ({ coordinates } = location);
+
+    dataLocation = {
+      type: "Point",
+      coordinates: [coordinates[0], coordinates[1]],
+    };
   }
 
-  const data = location
-    ? {
-        address,
-        biography,
-        company,
-        faxNumber,
-        messages,
-        owner,
-        phoneNumber,
-        services,
-        serviceModality,
-        webUrl,
-        zipCode,
-        $set: {
-          location: {
-            type: "Point",
-            coordinates: [coordinates[0], coordinates[1]],
-          },
-        },
-      }
-    : {
-        address,
-        biography,
-        company,
-        faxNumber,
-        messages,
-        owner,
-        phoneNumber,
-        services,
-        serviceModality,
-        webUrl,
-        zipCode,
-      };
+  console.log({ pictures });
+
+  if (pictures) {
+    dataPictures = {
+      profile: { ...pictures },
+    };
+  }
+
+  console.log({ dataLocation });
+  console.log({ dataPictures });
+
+  const data = {
+    $set: {
+      ...preData,
+      location: { ...dataLocation },
+      pictures: dataPictures,
+    },
+  };
+
+  console.log({ data });
 
   try {
     user = await User.findByIdAndUpdate({ _id: id }, data, {
