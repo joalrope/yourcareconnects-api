@@ -32,7 +32,7 @@ export function setupSockets(server: any) {
           socketId,
         };
 
-        console.log("connectedUsers: ", connectedUsers);
+        //console.log("connectedUsers: ", connectedUsers);
         io.emit("connectedUsers", connectedUsers);
       }
     });
@@ -64,14 +64,14 @@ export function setupSockets(server: any) {
 
         socket.to(socketId).emit("receiveMessage", receiverMessage);
       } else {
-        console.log("sending notification");
+        //console.log("sending notification");
         //TODO: send notification verify
         const { notifications } = await incrementUserNotifications(
           senderId,
           receiverId
         );
 
-        console.log({ notifications: notifications[`id${senderId}`] });
+        //console.log({ notifications: notifications[`id${senderId}`] });
 
         socket.emit("updateNotifications", notifications[`id${senderId}`]);
       }

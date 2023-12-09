@@ -147,6 +147,8 @@ export const getUserMessages = async (req: Request, res: Response) => {
   if (messagesDB !== null) {
     const messages = messagesDB.messages[myKey];
 
+    //TODO: Group by date
+
     res.status(200).json({
       ok: true,
       msg: "The messages were successfully obtained",
@@ -291,73 +293,29 @@ export const getUsersByServices = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-
+  const { location, pictures, ...restData } = req.body;
   let user!: IUser;
 
-  const {
-    address,
-    biography,
-    company,
-    faxNumber,
-    location,
-    messages,
-    owner,
-    phoneNumber,
-    pictures,
-    services,
-    serviceModality,
-    webUrl,
-    zipCode,
-  } = req.body;
-
-  let coordinates!: number[];
-
-  const preData = {
-    address,
-    biography,
-    company,
-    faxNumber,
-    messages,
-    owner,
-    phoneNumber,
-    services,
-    serviceModality,
-    webUrl,
-    zipCode,
-  };
-
-  let dataLocation!: { type: string; coordinates: number[] };
-  let dataPictures!: object;
-
   if (location) {
-    ({ coordinates } = location);
+    const { coordinates } = location;
 
-    dataLocation = {
+    restData.location = {
       type: "Point",
       coordinates: [coordinates[0], coordinates[1]],
     };
   }
 
-  console.log({ pictures });
-
   if (pictures) {
-    dataPictures = {
-      profile: { ...pictures },
+    restData.pictures = {
+      ...pictures,
     };
   }
 
-  console.log({ dataLocation });
-  console.log({ dataPictures });
-
   const data = {
     $set: {
-      ...preData,
-      location: { ...dataLocation },
-      pictures: dataPictures,
+      ...restData,
     },
   };
-
-  console.log({ data });
 
   try {
     user = await User.findByIdAndUpdate({ _id: id }, data, {

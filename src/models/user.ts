@@ -246,7 +246,7 @@ const UserSchema = new Schema<IUser>(
     },
     pictures: {
       type: Object,
-      default: { profile: "" },
+      default: { profile: { image: "", name: "", type: "" } },
     },
     role: {
       type: String,
