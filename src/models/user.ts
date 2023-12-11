@@ -272,6 +272,8 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
+UserSchema.index({ location: "2dsphere" });
+
 UserSchema.pre("find", function () {
   this.where({ isDeleted: false });
 });

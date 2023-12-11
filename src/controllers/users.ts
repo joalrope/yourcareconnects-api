@@ -267,6 +267,7 @@ export const getUsersByServices = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
+    console.log("error", error);
     returnErrorStatus(error, res);
   }
 
