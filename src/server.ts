@@ -36,6 +36,7 @@ export class Server {
 
     // seed database with first data
     const seedDB = async () => {
+      console.log("incoming seedDB");
       const colecciones = mongoose.modelNames();
 
       colecciones.forEach(async (colection) => {
