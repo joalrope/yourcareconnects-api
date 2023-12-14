@@ -8,9 +8,9 @@ import swaggerUI from "swagger-ui-express";
 //import { swaggerStart } from "./docs/swagger-start";
 import { options } from "./docs/index";
 import { apiRoutes } from "./routes";
-import { Service, User } from "./models";
-//import servicesJson from "../public/yourcareconnects.services.json";
-//import modalitiesJson from "../public/yourcareconnects.modalities.json";
+import { Modality, Service, User } from "./models";
+import servicesJson from "../public/yourcareconnects.services.json";
+import modalitiesJson from "../public/yourcareconnects.modalities.json";
 
 export class Server {
   app: Express;
@@ -45,10 +45,11 @@ export class Server {
             .estimatedDocumentCount();
 
           if (total == 0) {
+            console.log("running seedDB");
             await Service.deleteMany({});
-            //await Service.insertMany(servicesJson);
-            //await Modality.deleteMany({});
-            //await Modality.insertMany(modalitiesJson);
+            await Service.insertMany(servicesJson);
+            await Modality.deleteMany({});
+            await Modality.insertMany(modalitiesJson);
             await User.deleteMany({});
           }
         }
