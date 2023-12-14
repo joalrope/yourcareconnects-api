@@ -2,9 +2,9 @@ import { Request as Req, Response as Resp } from "express";
 import { glob } from "glob";
 import path from "path";
 import fs from "fs";
-import { User } from "../models";
+import { mkdir, readdir, rename, unlink } from "fs/promises";
+import { IUser, User } from "../models";
 import { jwtParse } from "../helpers/jwt";
-import { delFilesOnDir } from "../helpers/delFilesOnDir";
 
 interface imgData {
   id: string;
@@ -13,69 +13,91 @@ interface imgData {
   image: string;
 }
 
-export const uploadProfileImage = async (req: Req, res: Resp) => {
-  const { fullFileName } = req.params;
+export const uploadImage = async (req: Req, res: Resp) => {
   const token = req.headers["x-token"];
   const { uid } = jwtParse(token);
+  const dir = path.join(__dirname, `../../uploads`);
 
-  let user;
-  let oldProfilePicture;
+  const files = await readdir(dir);
 
-  try {
-    user = await User.findById(uid);
-  } catch (error) {
-    return res.status(500).json({
-      ok: false,
-      msg: "Please talk to the administrator",
-      result: { error },
-    });
-  }
+  files.forEach(async (file) => {
+    const [id, place, name] = file.split("-");
+    let user: IUser | null = null;
 
-  if (user) {
-    oldProfilePicture = user.pictures.profile;
-  }
-
-  try {
-    user = await User.findByIdAndUpdate(
-      { _id: uid },
-      {
-        "pictures.profile": fullFileName,
-      },
-      {
-        new: true,
-        strict: false,
+    if (place && name) {
+      try {
+        user = User.find({ id });
+      } catch (error) {
+        console.error("Error finding user:", error);
       }
-    );
-  } catch (error) {
-    return res.status(500).json({
-      ok: false,
-      msg: "Please talk to the administrator",
-      result: { error },
-    });
-  }
 
-  const dir = path.join(__dirname, `../../uploads/images/${uid}`);
+      if (user) {
+        const userProfileImagePath = path.join(
+          __dirname,
+          `../../uploads/images/${uid}/${place}`
+        );
 
-  delFilesOnDir(dir, oldProfilePicture);
+        if (fs.existsSync(userProfileImagePath)) {
+          const files = await readdir(userProfileImagePath);
 
-  return res.status(200).json({
-    ok: true,
-    msg: "Successfully uploaded Image Profile",
-    result: { user },
+          files.forEach(async (file) => {
+            try {
+              await unlink(path.join(userProfileImagePath, file));
+            } catch (error) {
+              console.error("Error deleting file:", error);
+            }
+          });
+        }
+
+        if (!fs.existsSync(`${dir}/images/${uid}/${place}`)) {
+          try {
+            await mkdir(`${dir}/images/${uid}/${place}`, { recursive: true });
+          } catch (error) {
+            console.error("Error creating directory:", error);
+          }
+        }
+
+        const oldPath = path.join(__dirname, `../../uploads/${file}`);
+        const newPath = path.join(
+          __dirname,
+          `../../uploads/images/${uid}/${place}/${name}`
+        );
+
+        try {
+          await rename(oldPath, newPath);
+
+          return res.status(200).json({
+            ok: true,
+            msg: `Successfully uploaded Image to ${uid}`,
+            result: { image: newPath.split("\\").pop() },
+          });
+        } catch (error) {
+          console.error("Error renaming file:", error);
+        }
+      }
+    }
+    return;
   });
+  return;
 };
 
-export const uploadDocs = async (req: Req, res: Resp) => {
-  const { fullFileName } = req.params;
+export const uploadDoc = async (req: Req, res: Resp) => {
   const token = req.headers["x-token"];
   const { uid } = jwtParse(token);
+  const dir = path.join(__dirname, `../../uploads`);
 
-  console.log({ fullFileName, uid });
+  console.log({ uid });
+
+  const files = await readdir(dir);
+
+  files.forEach(async (file) => {
+    console.log(file);
+  });
 
   return res.status(200).json({
     ok: true,
     msg: "Successfully uploaded Docs",
-    result: {},
+    result: { doc: "doc.pdf" },
   });
 };
 
@@ -113,6 +135,19 @@ export const getImages = async (_req: Req, res: Resp) => {
     .catch((error) => {
       console.log("an error occurred during the operation:", error);
     });
+};
+export const getDocs = async (req: Req, res: Resp) => {
+  const token = req.headers["x-token"];
+  const { uid } = jwtParse(token);
+  const dir = path.join(__dirname, `../../uploads/docs/${uid}`);
+
+  const files = await readdir(dir);
+
+  res.status(200).json({
+    ok: true,
+    msg: "files successfully obtained",
+    result: { files },
+  });
 };
 
 const imagesPopulate = (data: string[][]) => {

@@ -41,6 +41,8 @@ export {
   createMessage,
   deleteMessage,
 } from "./messages";
+
+export { getImages, uploadImage, getDocs, uploadDoc } from "./uploads";
 export { getRoles, getRole, createRole, deleteRole } from "./roles";
 export { changePassword, forgotPassword, login } from "./auth";
 export { geti18n } from "./i18n";
