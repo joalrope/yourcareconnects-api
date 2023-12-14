@@ -1,12 +1,16 @@
 import express, { Express } from "express";
 import { createServer } from "http";
 import cors from "cors";
+import mongoose from "mongoose";
 import { dbConnection } from "./database/config";
 import { setupSockets } from "./socket/socket";
 import swaggerUI from "swagger-ui-express";
 //import { swaggerStart } from "./docs/swagger-start";
 import { options } from "./docs/index";
 import { apiRoutes } from "./routes";
+import { Modality, Service } from "./models";
+import servicesJson from "../public/yourcareconnects.services.json";
+import modalitiesJson from "../public/yourcareconnects.modalities.json";
 
 export class Server {
   app: Express;
@@ -29,6 +33,28 @@ export class Server {
 
     // WebSocket
     setupSockets(this.server);
+
+    // seed database with first data
+    const seedDB = async () => {
+      const colecciones = mongoose.modelNames();
+
+      colecciones.forEach(async (colection) => {
+        if (colection === "User") {
+          const total = await mongoose
+            .model(colection)
+            .estimatedDocumentCount();
+
+          if (total == 1) {
+            await Service.deleteMany({});
+            await Service.insertMany(servicesJson);
+            await Modality.deleteMany({});
+            await Modality.insertMany(modalitiesJson);
+          }
+        }
+      });
+    };
+
+    seedDB();
   }
 
   async conectarDB() {

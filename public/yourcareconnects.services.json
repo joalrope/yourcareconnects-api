@@ -1,0 +1,528 @@
+[{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#32CD32",
+      "isDeleted": false,
+      "title": "Meal Prep",
+      "value": "Food|Meal Prep"
+    },
+    {
+      "children": [],
+      "tagColor": "#00BFFF",
+      "isDeleted": false,
+      "title": "Healthy Food",
+      "value": "Food|Healthy Food"
+    },
+    {
+      "children": [],
+      "tagColor": "#0000FF",
+      "isDeleted": false,
+      "title": "Restaurant",
+      "value": "Food|Restaurant"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Food",
+  "value": "Food",
+  "tagColor": "#6610f2"
+},
+{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#FF0000",
+      "isDeleted": false,
+      "title": "Language Translation",
+      "value": "Translation|Language Translation"
+    },
+    {
+      "children": [],
+      "tagColor": "#2E8B57",
+      "isDeleted": false,
+      "title": "Medical Terminology Translations",
+      "value": "Translation|Medical Terminology Translations"
+    },
+    {
+      "children": [],
+      "tagColor": "#32CD32",
+      "isDeleted": false,
+      "title": "Technic Translation ",
+      "value": "Technic Translation "
+    }
+  ],
+  "isDeleted": false,
+  "title": "Translation",
+  "value": "Translation",
+  "tagColor": "#FF4500"
+},
+{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#00FF00",
+      "isDeleted": false,
+      "title": "Lawyers"
+    },
+    {
+      "children": [],
+      "tagColor": "#FF7F50",
+      "isDeleted": false,
+      "title": "Affidavits",
+      "value": "Notary & Legal Services|Affidavits"
+    },
+    {
+      "children": [],
+      "tagColor": "#CD5C5C",
+      "isDeleted": false,
+      "title": "Notary Services",
+      "value": "Notary & Legal Services|Notary Services"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Notary & Legal Services",
+  "value": "Notary & Legal Services",
+  "tagColor": "#1E90FF"
+},
+{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#00008B",
+      "isDeleted": false,
+      "title": "Coaches",
+      "value": "Holistic & Palliative Services|Coaches"
+    },
+    {
+      "children": [],
+      "tagColor": "#7B68EE",
+      "isDeleted": false,
+      "title": "Caregivers",
+      "value": "Holistic & Palliative Services|Caregivers"
+    },
+    {
+      "children": [],
+      "tagColor": "#006400",
+      "isDeleted": false,
+      "title": "Chaplains",
+      "value": "Holistic & Palliative Services|Chaplains"
+    },
+    {
+      "children": [],
+      "tagColor": "#191970",
+      "isDeleted": false,
+      "title": "Acupuncture",
+      "value": "Holistic & Palliative Services|Acupuncture"
+    },
+    {
+      "children": [],
+      "tagColor": "#dc3545",
+      "isDeleted": false,
+      "title": "Acupressure",
+      "value": "Holistic & Palliative Services|Acupressure"
+    },
+    {
+      "children": [],
+      "tagColor": "#32CD32",
+      "isDeleted": false,
+      "title": "Massage Therapist",
+      "value": "Holistic & Palliative Services|Massage Therapist"
+    },
+    {
+      "children": [],
+      "tagColor": "#CD853F",
+      "isDeleted": false,
+      "title": "Chiropractics",
+      "value": "Holistic & Palliative Services|Chiropractics"
+    },
+    {
+      "children": [],
+      "tagColor": "#8A2BE2",
+      "isDeleted": false,
+      "title": "Expressive Art Therapist",
+      "value": "Holistic & Palliative Services|Expressive Art Therapist"
+    },
+    {
+      "children": [],
+      "tagColor": "#808000",
+      "isDeleted": false,
+      "title": "Animal Therapy",
+      "value": "Holistic & Palliative Services|Animal Therapy"
+    },
+    {
+      "children": [],
+      "tagColor": "#DAA520",
+      "isDeleted": false,
+      "title": "Kinesiologist",
+      "value": "Holistic & Palliative Services|Kinesiologist"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Holistic & Palliative Services",
+  "value": "Holistic & Palliative Services",
+  "tagColor": "#6B8E23"
+},
+{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#DA70D6",
+      "isDeleted": false,
+      "title": "Community Events",
+      "value": "Community Activities Center|Community Events"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Community Activities Center",
+  "value": "Community Activities Center",
+  "tagColor": "#FF4500"
+},
+{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#8B4513",
+      "isDeleted": false,
+      "title": "Cleaning",
+      "value": "Domestic|Cleaning"
+    },
+    {
+      "children": [],
+      "tagColor": "#0000CD",
+      "isDeleted": false,
+      "title": "Cooking",
+      "value": "Domestic|Cooking"
+    },
+    {
+      "children": [],
+      "tagColor": "#00FF00",
+      "isDeleted": false,
+      "title": "Gardening",
+      "value": "Domestic|Gardening"
+    },
+    {
+      "children": [],
+      "tagColor": "#6610f2",
+      "isDeleted": false,
+      "title": "Washing & Ironing",
+      "value": "Domestic|Washing & Ironing"
+    },
+    {
+      "children": [],
+      "tagColor": "#483D8B",
+      "isDeleted": false,
+      "title": "Transportation",
+      "value": "Domestic|Transportation"
+    },
+    {
+      "children": [],
+      "tagColor": "#B22222",
+      "isDeleted": false,
+      "title": "Handyman",
+      "value": "Domestic|Handyman"
+    },
+    {
+      "children": [],
+      "tagColor": "#C71585",
+      "isDeleted": false,
+      "title": "Technical Services",
+      "value": "Domestic|Technical Services"
+    },
+    {
+      "children": [],
+      "tagColor": "#A0522D",
+      "isDeleted": false,
+      "title": "Decoration",
+      "value": "Domestic|Decoration"
+    },
+    {
+      "children": [],
+      "tagColor": "#00FF00",
+      "isDeleted": false,
+      "title": "Car Care",
+      "value": "Domestic|Car Care"
+    },
+    {
+      "children": [],
+      "tagColor": "#9ACD32",
+      "isDeleted": false,
+      "title": "Pets",
+      "value": "Domestic|Pets"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Domestic",
+  "value": "Domestic",
+  "tagColor": "#DC143C"
+},
+{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#7B68EE",
+      "isDeleted": false,
+      "title": "Doctors",
+      "value": "Clinical Services|Doctors"
+    },
+    {
+      "children": [],
+      "tagColor": "#3CB371",
+      "isDeleted": false,
+      "title": "Clinics",
+      "value": "Clinical Services|Clinics"
+    },
+    {
+      "children": [],
+      "tagColor": "#9932CC",
+      "isDeleted": false,
+      "title": "Nurses",
+      "value": "Clinical Services|Nurses"
+    },
+    {
+      "children": [],
+      "tagColor": "#FF4500",
+      "isDeleted": false,
+      "title": "Counselors",
+      "value": "Clinical Services|Counselors"
+      
+    },
+    {
+      "children": [],
+      "tagColor": "#006400",
+      "isDeleted": false,
+      "title": "Psychologist",
+      "value": "Clinical Services|Psychologist"
+    },
+    {
+      "children": [],
+      "tagColor": "#2E8B57",
+      "isDeleted": false,
+      "title": "Occupational Therapist",
+      "value": "Clinical Services|Occupational Therapist"
+    },
+    {
+      "children": [],
+      "tagColor": "#FFA500",
+      "isDeleted": false,
+      "title": "Speech Therapist",
+      "value": "Clinical Services|Speech Therapist"
+    },
+    {
+      "children": [],
+      "tagColor": "#808000",
+      "isDeleted": false,
+      "title": "Clinical Rehabilitation",
+      "value": "Clinical Services|Clinical Rehabilitation"
+    },
+    {
+      "children": [],
+      "tagColor": "#CD853F",
+      "isDeleted": false,
+      "title": "Clinical Social Workers",
+      "value": "Clinical Services|Clinical Social Workers"
+    },
+    {
+      "children": [],
+      "tagColor": "#800080",
+      "isDeleted": false,
+      "title": "Nutritionists",
+      "value": "Clinical Services|Nutritionists"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Clinical Services",
+  "value": "Clinical Services",
+  "tagColor": "#1E90FF"
+},
+{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#00BFFF",
+      "isDeleted": false,
+      "title": "Flower Shops",
+      "value": "Gift Shops|Flower Shops"
+    },
+    {
+      "children": [],
+      "tagColor": "#008000",
+      "isDeleted": false,
+      "title": "Fruit Gift Services",
+      "value": "Gift Shops|Fruit Gift Services"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Gift Shops",
+  "value": "Gift Shops",
+  "tagColor": "#800080"
+},
+{
+  "children": [
+    {
+      "children": [
+        {
+          "title": "Cardiologist",
+          "value": "Support Groups|by Specialties|Cardiologist",
+          "tagColor": "#FF7F50",
+          "children": []
+        },
+        {
+          "title": "Neurologist",
+          "value": "Support Groups|by Specialties|Neurologist",
+          "tagColor": "#872713",
+          "children": []
+        }
+      ],
+      "tagColor": "#6610f2",
+      "isDeleted": false,
+      "title": "by Specialties",
+      "value": "Support Groups|by Specialties"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Support Groups",
+  "value": "Support Groups",
+  "tagColor": "#191970"
+},
+{
+  "isDeleted": false,
+  "title": "Entertainment",
+  "value": "Entertainment",
+  "tagColor": "#FF1493",
+  "children": []
+},
+{
+  "isDeleted": false,
+  "title": "Insurances",
+  "value": "Insurances",
+  "tagColor": "#32CD32",
+  "children": []
+},
+{
+  "isDeleted": false,
+  "title": "Radiology and Imaging Center",
+  "value": "Radiology and Imaging Center",
+  "children": [],
+  "tagColor": "#9932CC"
+},
+{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#8A2BE2",
+      "isDeleted": false,
+      "title": "Barbers",
+      "value": "Personal Care|Barbers"
+    },
+    {
+      "children": [],
+      "tagColor": "#808000",
+      "isDeleted": false,
+      "title": "Nails Technician",
+      "value": "Personal Care|Nails Technician"
+    },
+    {
+      "children": [],
+      "tagColor": "#CD853F",
+      "isDeleted": false,
+      "title": "Facial and Body Care",
+      "value": "Personal Care|Facial and Body Care"
+    },
+    {
+      "children": [],
+      "tagColor": "#4B0082",
+      "isDeleted": false,
+      "title": "Massage Technician",
+      "value": "Personal Care|Massage Technician"
+    },
+    {
+      "children": [],
+      "tagColor": "#800000",
+      "isDeleted": false,
+      "title": "Hair Stylish",
+      "value": "Personal Care|Hair Stylish"
+    },
+    {
+      "children": [],
+      "tagColor": "#32CD32",
+      "isDeleted": false,
+      "title": "Cosmetician",
+      "value": "Personal Care|Cosmetician"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Personal Care",
+  "value": "Personal Care",
+  "tagColor": "#20B2AA"
+},
+{
+  "children": [
+    {
+      "children": [],
+      "tagColor": "#4B0082",
+      "isDeleted": false,
+      "title": "Crutches",
+      "value": "Medical Equipment|Crutches"
+    },
+    {
+      "children": [],
+      "tagColor": "#CD5C5C",
+      "isDeleted": false,
+      "title": "Canes",
+      "value": "Medical Equipment|Canes"
+    },
+    {
+      "children": [],
+      "tagColor": "#CD853F",
+      "isDeleted": false,
+      "title": "Wheelchairs",
+      "value": "Medical Equipment|Wheelchairs"
+    },
+    {
+      "children": [],
+      "tagColor": "#800000",
+      "isDeleted": false,
+      "title": "Walkers",
+      "value": "Medical Equipment|Walkers"
+    },
+    {
+      "children": [],
+      "tagColor": "#8B0000",
+      "isDeleted": false,
+      "title": "Respirators",
+      "value": "Medical Equipment|Respirators"
+    },
+    {
+      "children": [],
+      "tagColor": "#DC143C",
+      "isDeleted": false,
+      "title": "Portable oxygen",
+      "value": "Medical Equipment|Portable oxygen"
+    },
+    {
+      "children": [],
+      "tagColor": "#8B4513",
+      "isDeleted": false,
+      "title": "Limb braces and supports",
+      "value": "Medical Equipment|Limb braces and supports"
+    },
+    {
+      "children": [],
+      "tagColor": "#696969",
+      "isDeleted": false,
+      "title": "Hospital-type beds",
+      "value": "Medical Equipment|Hospital-type beds"
+    }
+  ],
+  "isDeleted": false,
+  "title": "Medical Equipment",
+  "value": "Medical Equipment",
+  "tagColor": "#FFA500"
+},
+{
+  "isDeleted": false,
+  "title": "Pharmacies",
+  "value": "Pharmacies",
+  "tagColor": "#556B2F",
+  "children": []
+}]
