@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export const dbConnection = async () => {
-  //const dbName = process.env.MONGO_DBNAME;
+  const dbName = process.env.MONGO_DBNAME;
   //const user = process.env.MONGO_USER;
   //const password = process.env.MONGO_PASSWORD;
   //const cluster = process.env.MONGO_CLUSTER;
@@ -12,7 +12,7 @@ export const dbConnection = async () => {
       //.connect("mongodb://127.0.0.1:27017/yourcareconnects", {
       //.connect(`mongodb://${user}:${password}@${cluster}`, {
       .connect(`mongodb://mongo-o32u:27017/`, {
-        //dbName: `${dbName}`,
+        dbName: `${dbName}`,
         useUnifiedTopology: true,
         useCreateIndex: true,
         useFindAndModify: false,
