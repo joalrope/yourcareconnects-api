@@ -8,7 +8,7 @@ import swaggerUI from "swagger-ui-express";
 //import { swaggerStart } from "./docs/swagger-start";
 import { options } from "./docs/index";
 import { apiRoutes } from "./routes";
-import { Modality, Service, User } from "./models";
+import { Service, User } from "./models";
 //import servicesJson from "../public/yourcareconnects.services.json";
 //import modalitiesJson from "../public/yourcareconnects.modalities.json";
 
@@ -47,7 +47,7 @@ export class Server {
           if (total == 0) {
             await Service.deleteMany({});
             //await Service.insertMany(servicesJson);
-            await Modality.deleteMany({});
+            //await Modality.deleteMany({});
             //await Modality.insertMany(modalitiesJson);
             await User.deleteMany({});
           }
