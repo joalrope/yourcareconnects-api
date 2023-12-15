@@ -1,15 +1,14 @@
 import express, { Express } from "express";
 import { createServer } from "http";
 import cors from "cors";
-import { dbConnection } from "./database/config";
+import { dbConnection, seedDB } from "./database/config";
 import { setupSockets } from "./socket/socket";
 import swaggerUI from "swagger-ui-express";
 //import { swaggerStart } from "./docs/swagger-start";
 import { options } from "./docs/index";
 import { apiRoutes } from "./routes";
-//import { Modality, Service, User } from "./models";
-//import servicesJson from "../public/yourcareconnects.services.json";
-//import modalitiesJson from "../public/yourcareconnects.modalities.json";
+
+const dbClear = process.env.DB_CLEAR;
 
 export class Server {
   app: Express;
@@ -34,15 +33,10 @@ export class Server {
     setupSockets(this.server);
 
     // seed database with first data
-    /*const seedDB = async () => {
-      await Service.deleteMany({});
-      await Service.insertMany(servicesJson);
-      await Modality.deleteMany({});
-      await Modality.insertMany(modalitiesJson);
-      await User.deleteMany({});
-    };
 
-    seedDB();*/
+    if (dbClear === "true") {
+      seedDB();
+    }
   }
 
   async conectarDB() {
