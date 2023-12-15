@@ -246,9 +246,9 @@ export const createUser = async (req: Request, res: Response) => {
 
   if (user.role === "provider") {
     const mailOptions = {
-      from: "jrodriguez@bohiques.com",
-      to: `${"jrodriguez@bohiques.com"}`,
-      subject: "yourcareconnects-app password recovery",
+      from: "contact@yourcareconnects.com",
+      to: `${user.email}`,
+      subject: "yourcareconnects - New Provider",
       generateTextFromHTML: true,
       html: `
       <div style="display:flex;justify-content:space-between">

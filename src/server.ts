@@ -44,7 +44,7 @@ export class Server {
             .model(colection)
             .estimatedDocumentCount();
 
-          if (total == 0) {
+          if (total === 0) {
             await Service.deleteMany({});
             await Service.insertMany(servicesJson);
             await Modality.deleteMany({});
