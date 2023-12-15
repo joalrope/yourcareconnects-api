@@ -1,7 +1,6 @@
 import express, { Express } from "express";
 import { createServer } from "http";
 import cors from "cors";
-import mongoose from "mongoose";
 import { dbConnection } from "./database/config";
 import { setupSockets } from "./socket/socket";
 import swaggerUI from "swagger-ui-express";
@@ -36,23 +35,11 @@ export class Server {
 
     // seed database with first data
     const seedDB = async () => {
-      const colecciones = mongoose.modelNames();
-
-      colecciones.forEach(async (colection) => {
-        if (colection === "User") {
-          const total = await mongoose
-            .model(colection)
-            .estimatedDocumentCount();
-
-          if (total === 0) {
-            await Service.deleteMany({});
-            await Service.insertMany(servicesJson);
-            await Modality.deleteMany({});
-            await Modality.insertMany(modalitiesJson);
-            await User.deleteMany({});
-          }
-        }
-      });
+      await Service.deleteMany({});
+      await Service.insertMany(servicesJson);
+      await Modality.deleteMany({});
+      await Modality.insertMany(modalitiesJson);
+      await User.deleteMany({});
     };
 
     seedDB();

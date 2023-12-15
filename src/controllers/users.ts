@@ -247,22 +247,19 @@ export const createUser = async (req: Request, res: Response) => {
   if (user.role === "provider") {
     const mailOptions = {
       from: "contact@yourcareconnects.com",
-      to: `${user.email}`,
+      to: `${"debbie.rivera@yourcareconnects.com"}`,
       subject: "yourcareconnects - New Provider",
       generateTextFromHTML: true,
       html: `
-      <div style="display:flex;justify-content:space-between">
-      <div style="background-color:black;border-radius:10px;padding:20px;flex:1 0 20%;margin-right:20px;height:40px;text-align:center; width:120px" >
-      <img src="https://yourcareconnects.com/wp-content/uploads/2023/08/cropped-your-care-connects-logo-letras-blancas-02-1024x501.png" alt="yourcareconnects logo" width="100px"/>
-      </div>
-      <div>
+      <h2 style="margin:0px;">New Provider</h1>
+      <br />
       <p style="margin:0px;">A new provider has registered, please review and make the respective approval or rejection <span>
       <div style="margin: 64px;text-align: center">
-      <h2>User Data</h2>
-      <h3>Hola ${`${user.names} ${user.lastName}`}</h3>
-      </div>
-      Yourcareconnects Support Team
-      </div>
+      <h3>User Data</h2>
+      <h5>Names: ${`${user.names}`}</h5>
+      <h5>Lasname: ${`${user.lastName}`}</h5>
+      <h5>email: ${`${user.email}`}</h5>
+      <h5>User type: ${`${user.role}`}</h5>
       </div>
       `,
     };
