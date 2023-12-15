@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcryptjs from "bcryptjs";
 import { IUser, User } from "../models/index";
-import { generateJWT } from "../helpers";
+import { generateJWT, sendEmail } from "../helpers";
 import { IResponse, returnErrorStatus } from "../controllers";
 import { IMessage } from "../models/user";
 import { randomLocation } from "../helpers/randomLocation";
@@ -74,6 +74,19 @@ export const getUser = async (req: Request, res: Response) => {
   return res.status(409).json(response);
 };
 
+export const thereIsSuperAdmin = async (_req: Request, res: Response) => {
+  const user = await User.findOne({ role: "superadmin" });
+
+  const result = user ? true : false;
+
+  const response = {
+    ok: result,
+    msg: `There is ${result ? "a" : "no"} a superadmin`,
+    result: { result },
+  };
+  return res.status(200).json(response);
+};
+
 export const getUsersByIsActive = async (req: Request, res: Response) => {
   const { limit = 5, from = 0 } = req.query;
   const { typeUser } = req.params;
@@ -98,6 +111,7 @@ export const getUsersByIsActive = async (req: Request, res: Response) => {
         email: 1,
         names: 1,
         lastName: 1,
+        role: 1,
         phoneNumber: 1,
         isActive: 1,
       })
@@ -228,6 +242,32 @@ export const createUser = async (req: Request, res: Response) => {
     await user.save();
   } catch (error) {
     returnErrorStatus(error, res);
+  }
+
+  if (user.role === "provider") {
+    const mailOptions = {
+      from: "jrodriguez@bohiques.com",
+      to: `${"jrodriguez@bohiques.com"}`,
+      subject: "yourcareconnects-app password recovery",
+      generateTextFromHTML: true,
+      html: `
+      <div style="display:flex;justify-content:space-between">
+      <div style="background-color:black;border-radius:10px;padding:20px;flex:1 0 20%;margin-right:20px;height:40px;text-align:center; width:120px" >
+      <img src="https://yourcareconnects.com/wp-content/uploads/2023/08/cropped-your-care-connects-logo-letras-blancas-02-1024x501.png" alt="yourcareconnects logo" width="100px"/>
+      </div>
+      <div>
+      <p style="margin:0px;">A new provider has registered, please review and make the respective approval or rejection <span>
+      <div style="margin: 64px;text-align: center">
+      <h2>User Data</h2>
+      <h3>Hola ${`${user.names} ${user.lastName}`}</h3>
+      </div>
+      Yourcareconnects Support Team
+      </div>
+      </div>
+      `,
+    };
+
+    await sendEmail(mailOptions);
   }
 
   response = {
@@ -490,6 +530,33 @@ export const changeActiveUserStatus = async (req: Request, res: Response) => {
     user = await User.findOneAndUpdate(
       { _id: id },
       { isActive: JSON.parse(value) },
+      {
+        new: true,
+        strict: false,
+      }
+    );
+  } catch (error) {
+    return returnErrorStatus(error, res);
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "User updated successfully",
+    result: {
+      user,
+    },
+  });
+};
+
+export const changeUserRole = async (req: Request, res: Response) => {
+  const { id, value } = req.params;
+
+  let user: IUser = {} as IUser;
+
+  try {
+    user = await User.findOneAndUpdate(
+      { _id: id },
+      { role: value },
       {
         new: true,
         strict: false,

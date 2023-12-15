@@ -10,10 +10,12 @@ export {
   getUsersByIsActive,
   clearUserNotifications,
   createUser,
+  thereIsSuperAdmin,
   updateUser,
   updateUserContacts,
   updateUserMessages,
   changeActiveUserStatus,
+  changeUserRole,
   incrementUserNotifications,
   deleteUser,
 } from "./users";

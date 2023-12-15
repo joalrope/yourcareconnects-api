@@ -16,6 +16,8 @@ import {
   clearUserNotifications,
   getUsersByIsActive,
   changeActiveUserStatus,
+  thereIsSuperAdmin,
+  changeUserRole,
 } from "../controllers";
 
 export const userRouter = Router();
@@ -35,6 +37,7 @@ userRouter.post(
 );
 
 userRouter.get("/", getUsers);
+userRouter.get("/sarole", thereIsSuperAdmin);
 userRouter.get("/isActive/:typeUser", getUsersByIsActive);
 userRouter.get("/services/:rng/:lat/:lng", getUsersByServices);
 userRouter.get("/messages/:id/:channel", getUserMessages);
@@ -101,6 +104,20 @@ userRouter.put(
     validateFields,
   ],
   changeActiveUserStatus
+);
+
+userRouter.put(
+  "/role/:id/:value",
+  [
+    validateJWT,
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID").isMongoId(),
+    check("id").custom(userIdAlreadyExists),
+    check("value", "You must provide an value").notEmpty(),
+    check("value", "not a valid value").isString(),
+    validateFields,
+  ],
+  changeUserRole
 );
 
 userRouter.delete(

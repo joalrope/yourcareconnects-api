@@ -36,7 +36,6 @@ export class Server {
 
     // seed database with first data
     const seedDB = async () => {
-      console.log("incoming seedDB");
       const colecciones = mongoose.modelNames();
 
       colecciones.forEach(async (colection) => {
@@ -46,7 +45,6 @@ export class Server {
             .estimatedDocumentCount();
 
           if (total == 0) {
-            console.log("running seedDB");
             await Service.deleteMany({});
             await Service.insertMany(servicesJson);
             await Modality.deleteMany({});
