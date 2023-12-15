@@ -7,9 +7,9 @@ import swaggerUI from "swagger-ui-express";
 //import { swaggerStart } from "./docs/swagger-start";
 import { options } from "./docs/index";
 import { apiRoutes } from "./routes";
-import { Modality, Service, User } from "./models";
-import servicesJson from "../public/yourcareconnects.services.json";
-import modalitiesJson from "../public/yourcareconnects.modalities.json";
+//import { Modality, Service, User } from "./models";
+//import servicesJson from "../public/yourcareconnects.services.json";
+//import modalitiesJson from "../public/yourcareconnects.modalities.json";
 
 export class Server {
   app: Express;
@@ -34,7 +34,7 @@ export class Server {
     setupSockets(this.server);
 
     // seed database with first data
-    const seedDB = async () => {
+    /*const seedDB = async () => {
       await Service.deleteMany({});
       await Service.insertMany(servicesJson);
       await Modality.deleteMany({});
@@ -42,7 +42,7 @@ export class Server {
       await User.deleteMany({});
     };
 
-    seedDB();
+    seedDB();*/
   }
 
   async conectarDB() {
