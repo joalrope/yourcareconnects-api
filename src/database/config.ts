@@ -8,6 +8,7 @@ export const dbConnection = async () => {
   const user = process.env.MONGO_USER;
   const password = process.env.MONGO_PASSWORD;
   const cluster = process.env.MONGO_CLUSTER;
+  const container = process.env.MONGO_CONTAINER;
 
   const isLocal = false;
 
@@ -15,7 +16,7 @@ export const dbConnection = async () => {
     development: isLocal
       ? "mongodb://127.2.0.1:27017/yourcareconnects"
       : `mongodb+srv://${user}:${password}@${cluster}`,
-    production: `mongodb://mongodb-8nb6:27017/`,
+    production: `${container}`,
   };
 
   let connectionString = "";
