@@ -5,16 +5,30 @@ import modalitiesJson from "../../public/yourcareconnects.modalities.json";
 
 export const dbConnection = async () => {
   const dbName = process.env.MONGO_DBNAME;
-  //const user = process.env.MONGO_USER;
-  //const password = process.env.MONGO_PASSWORD;
-  //const cluster = process.env.MONGO_CLUSTER;
+  const user = process.env.MONGO_USER;
+  const password = process.env.MONGO_PASSWORD;
+  const cluster = process.env.MONGO_CLUSTER;
+
+  const isLocal = false;
+
+  const cnnOptions = {
+    development: isLocal
+      ? "mongodb://127.2.0.1:27017/yourcareconnects"
+      : `mongodb+srv://${user}:${password}@${cluster}`,
+    production: `mongodb://mongodb-8nb6:27017/`,
+  };
+
+  let connectionString = "";
+
+  if (process.env.NODE_ENV === "development") {
+    connectionString = cnnOptions.development;
+  } else {
+    connectionString = cnnOptions.production;
+  }
 
   try {
     await mongoose
-      //.connect(`mongodb+srv://${user}:${password}@${cluster}`, {
-      //.connect("mongodb://127.0.0.1:27017/yourcareconnects", {
-      //.connect(`mongodb://${user}:${password}@${cluster}`, {
-      .connect(`mongodb://mongo-o32u:27017/`, {
+      .connect(connectionString, {
         dbName: `${dbName}`,
         useUnifiedTopology: true,
         useCreateIndex: true,
