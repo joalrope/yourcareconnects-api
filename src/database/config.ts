@@ -16,7 +16,7 @@ export const dbConnection = async () => {
     development: isLocal
       ? "mongodb://127.2.0.1:27017/yourcareconnects"
       : `mongodb+srv://${user}:${password}@${cluster}`,
-    production: `${container}`,
+    production: `mongodb://${container}`,
   };
 
   let connectionString = "";
