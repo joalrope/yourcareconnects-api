@@ -45,7 +45,10 @@ export class Server {
 
   middlewares() {
     // CORS
-    const origin = [String(process.env.URL_BASE)];
+    const origin = [
+      String(process.env.URL_BASE1),
+      String(process.env.URL_BASE2),
+    ];
     this.app.use(
       cors({
         origin,
