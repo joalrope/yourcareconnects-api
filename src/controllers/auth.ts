@@ -19,7 +19,7 @@ export const login = async (req: Request, res: Response) => {
         ok: false,
         statuscode: 400,
         msg: "User / Password are not correct",
-        result: {},
+        result: { user: {} },
       });
     }
 
