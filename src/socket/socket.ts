@@ -15,7 +15,7 @@ const connectedUsers: connectedUsers = {};
 export function setupSockets(server: any) {
   const io = new Server(server, {
     cors: {
-      origin: process.env.URL_BASE,
+      origin: [String(process.env.URL_BASE1), String(process.env.URL_BASE2)],
       methods: ["GET", "POST"],
     },
     connectionStateRecovery: {

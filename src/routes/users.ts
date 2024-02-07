@@ -18,6 +18,7 @@ import {
   changeActiveUserStatus,
   thereIsSuperAdmin,
   changeUserRole,
+  getUsersByEmail,
 } from "../controllers";
 
 export const userRouter = Router();
@@ -39,6 +40,7 @@ userRouter.post(
 userRouter.get("/", getUsers);
 userRouter.get("/sarole", thereIsSuperAdmin);
 userRouter.get("/isActive/:typeUser", getUsersByIsActive);
+userRouter.get("/email/:email", getUsersByEmail);
 userRouter.get("/services/:rng/:lat/:lng", getUsersByServices);
 userRouter.get("/messages/:id/:channel", getUserMessages);
 userRouter.get(

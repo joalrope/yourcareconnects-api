@@ -8,6 +8,7 @@ export {
   getUsersByServices,
   getUserMessages,
   getUsersByIsActive,
+  getUsersByEmail,
   clearUserNotifications,
   createUser,
   thereIsSuperAdmin,

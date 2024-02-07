@@ -87,6 +87,35 @@ export const thereIsSuperAdmin = async (_req: Request, res: Response) => {
   return res.status(200).json(response);
 };
 
+export const getUsersByEmail = async (req: Request, res: Response) => {
+  const { email } = req.params;
+
+  const user = await User.findOne(
+    { email },
+    {
+      names: 1,
+      emai: 1,
+      lastName: 1,
+      _id: 1,
+      role: 1,
+      phoneNumbrer: 1,
+      location: 1,
+      isActive: 1,
+      isdeleted: 1,
+      pictures: 1,
+      ratings: 1,
+      services: 1,
+    }
+  );
+
+  const response = {
+    ok: true,
+    msg: `The user with email: ${email} was successfully obtained`,
+    result: { users: [user] },
+  };
+  return res.status(200).json(response);
+};
+
 export const getUsersByIsActive = async (req: Request, res: Response) => {
   const { limit = 5, from = 0 } = req.query;
   const { typeUser } = req.params;
@@ -113,6 +142,7 @@ export const getUsersByIsActive = async (req: Request, res: Response) => {
         lastName: 1,
         role: 1,
         phoneNumber: 1,
+        services: 1,
         isActive: 1,
       })
         .skip(Number(from))
@@ -574,24 +604,40 @@ export const changeUserRole = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const role = req.headers["x-role"];
+
+  if (role === "customer" || role === "provider") {
+    return res.status(401).json({
+      ok: false,
+      msg: "Unauthorized",
+      result: {},
+    });
+  }
+
+  let user: IUser = {} as IUser;
 
   try {
-    const user = await User.findByIdAndUpdate(
-      id,
-      { isActive: false },
-      { new: true }
-    );
-
-    return res.status(204).json({
-      ok: true,
-      msg: "User deleted successfully",
-      result: user,
-    });
+    user = await User.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       ok: false,
       msg: "Please talk to the administrator",
       result: { error },
     });
   }
+
+  if (!user) {
+    return res.status(404).json({
+      ok: false,
+      msg: "User not found",
+      result: {},
+    });
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "User deleted successfully",
+    result: { user },
+  });
 };
