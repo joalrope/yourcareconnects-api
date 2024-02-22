@@ -6,8 +6,10 @@ import multer, { FileFilterCallback as FFCB } from "multer";
 import { jwtParse } from "../helpers/jwt";
 
 const storage = multer.diskStorage({
-  destination: async (_req: Request, _file, cb) => {
-    const dir = path.join(__dirname, `../../uploads`);
+  destination: async (_req: Request, file, cb) => {
+    console.log("===> pdf", file);
+
+    const dir = path.join(__dirname, `../../uploads/docs`);
 
     cb(null, dir);
   },
