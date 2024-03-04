@@ -216,6 +216,8 @@ export const getUserMessages = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   const { email, password, ...restData } = req.body;
 
+  console.log(email, password);
+
   let user!: IUser;
   let userDB!: IUser;
   let response!: IResponse;
