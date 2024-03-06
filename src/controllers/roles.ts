@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { Role } from "../models/index";
+import { Role } from "../models";
 import { getUserData } from "../helpers/jwt";
 
 export const getRoles = async (req: Request, res: Response) => {
