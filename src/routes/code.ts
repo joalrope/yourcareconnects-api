@@ -15,7 +15,7 @@ codeRouter.post(
   createCode
 );
 
-codeRouter.get("/", [validateJWT, validateFields], getCodes);
+codeRouter.get("/", [validateFields], getCodes);
 
 codeRouter.get(
   "/:code",
