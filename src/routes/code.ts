@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body, check } from "express-validator";
 import { createCode, getCode, getCodes, inactivateCode } from "../controllers";
-import { validateFields, validateJWT } from "../middlewares";
+import { validateFields } from "../middlewares";
 
 export const codeRouter = Router();
 
