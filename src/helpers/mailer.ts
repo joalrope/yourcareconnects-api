@@ -8,14 +8,7 @@ export const sendEmail = async (options: Options) => {
   const pass = process.env.EMAIL_PASSWORD;
 
   const transport = nodemailer.createTransport({
-    host: "smtpout.secureserver.net",
-    port: 465,
-    secure: true,
-    requireTLS: true,
-    tls: {
-      ciphers: "SSLv3",
-    },
-    debug: true,
+    service: "gmail",
     auth: {
       user,
       pass,

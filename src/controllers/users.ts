@@ -216,8 +216,6 @@ export const getUserMessages = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   const { email, password, ...restData } = req.body;
 
-  console.log(email, password);
-
   let user!: IUser;
   let userDB!: IUser;
   let response!: IResponse;
@@ -262,14 +260,11 @@ export const createUser = async (req: Request, res: Response) => {
     returnErrorStatus(error, res);
   }
 
-  // Generar el JWT
   const token = await generateJWT(user.id, user.email, user.role);
 
-  // Encriptar la contraseña
   const salt = bcryptjs.genSaltSync();
   user.password = bcryptjs.hashSync(password, salt);
 
-  // Guardar en BD
   try {
     await user.save();
   } catch (error) {
@@ -278,8 +273,8 @@ export const createUser = async (req: Request, res: Response) => {
 
   if (user.role === "provider") {
     const mailOptions = {
-      from: "contact@yourcareconnects.com",
-      to: `${"debbie.rivera@yourcareconnects.com"}`,
+      from: `${process.env.EMAIL_ADDRESS}`,
+      to: "drivera@yourcareconnects.com",
       subject: "yourcareconnects - New Provider",
       generateTextFromHTML: true,
       html: `

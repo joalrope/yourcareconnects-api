@@ -6,6 +6,11 @@ export interface IResetPassword {
   expires: number;
 }
 
+interface ISubscription {
+  code: string;
+  subsDate?: Date;
+}
+
 interface ILocation {
   type: string;
   coordinates: [number, number];
@@ -14,6 +19,19 @@ interface ILocation {
 interface IMultiPolygon {
   type: string;
   coordinates: [number, number][][][];
+}
+
+export interface IMessage extends Document {
+  sender: Schema.Types.ObjectId;
+  receiver: Schema.Types.ObjectId;
+  message: string;
+  sentTime: string;
+  type: IMessageType;
+  direction: IMessageDirection;
+  position: IMessagePosition;
+  senderId: string;
+  receiverId: string;
+  isDeleted: boolean;
 }
 
 export enum IMessageType {
@@ -39,53 +57,6 @@ export enum IMessagePosition {
   NORMAL = "normal",
   LAST = "last",
 }
-
-export interface IMessage extends Document {
-  sender: Schema.Types.ObjectId;
-  receiver: Schema.Types.ObjectId;
-  message: string;
-  sentTime: string;
-  type: IMessageType;
-  direction: IMessageDirection;
-  position: IMessagePosition;
-  senderId: string;
-  receiverId: string;
-  isDeleted: boolean;
-}
-
-/* const MessageSchema = new Schema<IMessage>({
-  sender: {
-    type: Schema.Types.ObjectId,
-  },
-  receiver: {
-    type: Schema.Types.ObjectId,
-  },
-  message: {
-    type: String,
-  },
-  sentTime: {
-    type: String,
-  },
-  type: {
-    type: String,
-  },
-  direction: {
-    type: String,
-  },
-  position: {
-    type: String,
-  },
-  senderId: {
-    type: String,
-  },
-  receiverId: {
-    type: String,
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-}); */
 
 export interface IUser extends Document {
   address?: string;
@@ -113,6 +84,7 @@ export interface IUser extends Document {
   points?: number;
   ratings?: number;
   resetPassword?: IResetPassword;
+  subscription?: ISubscription;
   role: string;
   services?: string[];
   serviceModality?: string[];
@@ -128,6 +100,17 @@ const resetPassword = new Schema<IResetPassword>({
   },
   expires: {
     type: Number,
+    default: 0,
+  },
+});
+
+const subscription = new Schema<ISubscription>({
+  code: {
+    type: String,
+    default: "",
+  },
+  subsDate: {
+    type: Date,
     default: 0,
   },
 });
@@ -219,6 +202,10 @@ const UserSchema = new Schema<IUser>(
     resetPassword: {
       type: resetPassword,
       default: { token: "", expires: 0 },
+    },
+    subscription: {
+      type: subscription,
+      default: { code: "", subsDate: 0 },
     },
     company: {
       type: String,

@@ -173,7 +173,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
   );
 
   const mailOptions = {
-    from: "contact@yourcareconnects.com",
+    from: `${process.env.EMAIL_ADDRESS}`,
     to: `${email}`,
     subject: "yourcareconnects-app password recovery",
     generateTextFromHTML: true,
