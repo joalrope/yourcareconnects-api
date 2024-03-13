@@ -48,7 +48,6 @@ export class Server {
     const origin = [
       String(process.env.URL_BASE1),
       String(process.env.URL_BASE2),
-      String(process.env.URL_BASE3),
     ];
     this.app.use(
       cors({
