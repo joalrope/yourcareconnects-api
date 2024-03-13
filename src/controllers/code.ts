@@ -39,6 +39,7 @@ export const getCode = async (req: Request, res: Response) => {
       .then((response) => response.json())
       .then((data) => data);
   } catch (error) {
+    console.log("error", error);
     return res.status(500).json({
       ok: false,
       msg: "Please talk to the administrator",
@@ -49,12 +50,15 @@ export const getCode = async (req: Request, res: Response) => {
   console.log({ code: resp.id, date: resp.date_created });
 
   if (!resp.id) {
+    console.log("No hay resp.id");
     return res.status(200).json({
       ok: false,
       msg: `The code: {{code}} does not exist`,
       result: { code: resp.id, subsDate: "" },
     });
   }
+
+  console.log("llego al final de la peticion");
 
   return res.status(200).json({
     ok: true,
