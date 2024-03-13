@@ -47,7 +47,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(200).json({
         ok: false,
         statuscode: 400,
-        msg: `Greetings, {{ names }} {{ lastname }}. Welcome.|We want to provide a safe and reliable process for suppliers and customers. That is why we are reviewing your credentials to provide you access to our platform.|You will soon be receiving an email with details of the approval or request for additional information to complete your profile.|If you understand that this is an error or you want to check the status of the process, you can write us an email to drivera@yourcareconnects.com or contact us at 321-430-3639.`,
+        msg: `Greetings, {{ names }} {{ lastname }}. Welcome.|We want to provide a safe and reliable process for suppliers and customers. That is why we are reviewing your credentials to provide you access to our platform.|You will soon be receiving an email with details of the approval or request for additional information to complete your profile.|If you understand that this is an error or you want to check the status of the process, you can write us an email to drivera@yourcareconnects.com or contact us at +1 (904) 206 7676.`,
 
         result: {
           user: {
