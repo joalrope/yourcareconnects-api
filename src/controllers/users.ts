@@ -5,6 +5,7 @@ import { generateJWT, sendEmail } from "../helpers";
 import { IResponse, returnErrorStatus } from "../controllers";
 import { IMessage } from "../models/user";
 import { randomLocation } from "../helpers/randomLocation";
+import { logger } from "../helpers/logger";
 
 export const getUsers = async (req: Request, res: Response) => {
   const { limit = 5, from = 0 } = req.query;
@@ -235,6 +236,7 @@ export const createUser = async (req: Request, res: Response) => {
   );
 
   if (codeDB) {
+    logger.info(`The code: ${code} has already been used`);
     return res.status(200).json({
       ok: false,
       msg: `The code: {{code}} has already been used`,
@@ -253,6 +255,7 @@ export const createUser = async (req: Request, res: Response) => {
       .then((response) => response.json())
       .then((data) => data);
   } catch (error) {
+    logger.error("fallo req to wp: ", error);
     return res.status(500).json({
       ok: false,
       msg: "Please talk to the administrator",
@@ -261,6 +264,7 @@ export const createUser = async (req: Request, res: Response) => {
   }
 
   if (!wpResponse.id) {
+    logger.info(`The code: ${wpResponse.id} does not exist`);
     return res.status(200).json({
       ok: false,
       msg: `The code: {{code}} does not exist`,
@@ -354,6 +358,8 @@ export const createUser = async (req: Request, res: Response) => {
       user: user,
     },
   };
+
+  logger.info(`User created successfully: ${user.email}`);
   return res.status(201).json(response);
 };
 
