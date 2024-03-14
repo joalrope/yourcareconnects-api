@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import { createServer } from "http";
 import cors from "cors";
+import morgan from "morgan";
 import { dbConnection, seedDB } from "./database/config";
 import { setupSockets } from "./socket/socket";
 import swaggerUI from "swagger-ui-express";
@@ -57,6 +58,9 @@ export class Server {
 
     // Reading and parsing the body
     this.app.use(express.json());
+
+    // HTTP logger
+    this.app.use(morgan("dev"));
 
     // statics Directories
     this.app.use(express.static("public"));
