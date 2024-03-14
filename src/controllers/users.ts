@@ -235,6 +235,8 @@ export const createUser = async (req: Request, res: Response) => {
     }
   );
 
+  console.log(codeDB);
+
   if (codeDB) {
     return res.status(200).json({
       ok: false,
@@ -261,6 +263,8 @@ export const createUser = async (req: Request, res: Response) => {
       result: { error },
     });
   }
+
+  console.log(wpResponse);
 
   if (!wpResponse.id) {
     console.log("No hay resp.id");
