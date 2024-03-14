@@ -1,13 +1,13 @@
 import express, { Express } from "express";
 import { createServer } from "http";
 import cors from "cors";
-import morgan from "morgan";
 import { dbConnection, seedDB } from "./database/config";
 import { setupSockets } from "./socket/socket";
 import swaggerUI from "swagger-ui-express";
 //import { swaggerStart } from "./docs/swagger-start";
 import { options } from "./docs/index";
 import { apiRoutes } from "./routes";
+import { morganMiddleware } from "./middlewares";
 
 const dbClear = process.env.DB_CLEAR;
 
@@ -60,7 +60,7 @@ export class Server {
     this.app.use(express.json());
 
     // HTTP logger
-    this.app.use(morgan("dev"));
+    this.app.use(morganMiddleware);
 
     // statics Directories
     this.app.use(express.static("public"));

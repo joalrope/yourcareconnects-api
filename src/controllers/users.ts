@@ -221,7 +221,6 @@ export const createUser = async (req: Request, res: Response) => {
   const wpUrl = `${process.env.WP_URL}/${code}`;
 
   let user!: IUser;
-  let userDB!: IUser;
   let response!: IResponse;
   let wpResponse;
 
@@ -234,8 +233,6 @@ export const createUser = async (req: Request, res: Response) => {
       subscription: 1,
     }
   );
-
-  console.log(codeDB);
 
   if (codeDB) {
     return res.status(200).json({
@@ -256,7 +253,6 @@ export const createUser = async (req: Request, res: Response) => {
       .then((response) => response.json())
       .then((data) => data);
   } catch (error) {
-    console.log("error", error);
     return res.status(500).json({
       ok: false,
       msg: "Please talk to the administrator",
@@ -264,10 +260,7 @@ export const createUser = async (req: Request, res: Response) => {
     });
   }
 
-  console.log(wpResponse);
-
   if (!wpResponse.id) {
-    console.log("No hay resp.id");
     return res.status(200).json({
       ok: false,
       msg: `The code: {{code}} does not exist`,
@@ -297,7 +290,7 @@ export const createUser = async (req: Request, res: Response) => {
     zipCode: "",
   };
 
-  try {
+  /* try {
     userDB = await User.findOne({ email });
   } catch (error) {
     returnErrorStatus(error, res);
@@ -311,7 +304,7 @@ export const createUser = async (req: Request, res: Response) => {
     };
 
     return res.status(409).json(response);
-  }
+  } */
 
   try {
     user = new User({ email, password, ...restData, ...complement });
@@ -361,9 +354,7 @@ export const createUser = async (req: Request, res: Response) => {
       user: user,
     },
   };
-  res.status(201).json(response);
-
-  return;
+  return res.status(201).json(response);
 };
 
 export const getUsersByServices = async (req: Request, res: Response) => {
@@ -390,7 +381,6 @@ export const getUsersByServices = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.log("error", error);
     returnErrorStatus(error, res);
   }
 
@@ -675,7 +665,6 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     user = await User.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       ok: false,
       msg: "Please talk to the administrator",

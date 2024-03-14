@@ -17,7 +17,7 @@ export const emailAlreadyExists = async (email: string = "") => {
   // Verificar si el correo existe
   const emailDB = await User.findOne({ email });
   if (emailDB) {
-    throw new Error(`The email: {{${email}}}, is already registered`);
+    throw new Error(`The email: {{email}}, is already registered`);
   }
 };
 

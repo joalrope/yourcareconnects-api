@@ -3,9 +3,11 @@
 node_modules/
 dist/
 build/
+logs/
 #uploads/images/
 #uploads/docs/
 
 .env
+
 
 
