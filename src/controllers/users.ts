@@ -215,7 +215,7 @@ export const getUserMessages = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { email, password, code, ...restData } = req.body;
+  const { email, password, code, role, ...restData } = req.body;
 
   const wpUsername = process.env.WP_USERNAME;
   const wpPassword = process.env.WP_PASSWORD;
@@ -225,51 +225,58 @@ export const createUser = async (req: Request, res: Response) => {
   let response!: IResponse;
   let wpResponse;
 
-  const codeDB = await User.findOne(
-    { "subscription.code": code },
-    {
-      names: 1,
-      lastName: 1,
-      email: 1,
-      subscription: 1,
+  if (role === "provider") {
+    const codeDB = await User.findOne(
+      { "subscription.code": code },
+      {
+        names: 1,
+        lastName: 1,
+        email: 1,
+        subscription: 1,
+      }
+    );
+
+    if (codeDB) {
+      logger.info(`The code: ${code} has already been used`);
+      return res.status(200).json({
+        ok: false,
+        msg: `The code: {{code}} has already been used`,
+        result: { code, subsDate: codeDB.subscription.subsDate },
+      });
     }
-  );
 
-  if (codeDB) {
-    logger.info(`The code: ${code} has already been used`);
-    return res.status(200).json({
-      ok: false,
-      msg: `The code: {{code}} has already been used`,
-      result: { code, subsDate: codeDB.subscription.subsDate },
-    });
-  }
+    try {
+      wpResponse = await fetch(wpUrl, {
+        method: "GET",
+        headers: new Headers({
+          Authorization: "Basic " + btoa(`${wpUsername}:${wpPassword}`),
+          "Content-Type": "application/json",
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => data);
+    } catch (error) {
+      logger.error("fallo req to wp: ", error);
+      return res.status(500).json({
+        ok: false,
+        msg: "Please talk to the administrator",
+        result: { error },
+      });
+    }
 
-  try {
-    wpResponse = await fetch(wpUrl, {
-      method: "GET",
-      headers: new Headers({
-        Authorization: "Basic " + btoa(`${wpUsername}:${wpPassword}`),
-        "Content-Type": "application/json",
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => data);
-  } catch (error) {
-    logger.error("fallo req to wp: ", error);
-    return res.status(500).json({
-      ok: false,
-      msg: "Please talk to the administrator",
-      result: { error },
-    });
-  }
-
-  if (!wpResponse.id) {
-    logger.info(`The code: ${wpResponse.id} does not exist`);
-    return res.status(200).json({
-      ok: false,
-      msg: `The code: {{code}} does not exist`,
-      result: { code: wpResponse.id, subsDate: "" },
-    });
+    if (!wpResponse.id) {
+      logger.info(`The code: ${wpResponse.id} does not exist`);
+      return res.status(200).json({
+        ok: false,
+        msg: `The code: {{code}} does not exist`,
+        result: { code: wpResponse.id, subsDate: "" },
+      });
+    }
+  } else {
+    wpResponse = {
+      id: "",
+      date_created: Date.now(),
+    };
   }
 
   const complement = {
@@ -311,7 +318,7 @@ export const createUser = async (req: Request, res: Response) => {
   } */
 
   try {
-    user = new User({ email, password, ...restData, ...complement });
+    user = new User({ email, password, role, ...restData, ...complement });
   } catch (error) {
     returnErrorStatus(error, res);
   }
