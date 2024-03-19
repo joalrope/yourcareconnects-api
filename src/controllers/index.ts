@@ -17,6 +17,7 @@ export {
   updateUserMessages,
   changeActiveUserStatus,
   changeUserRole,
+  setUserLocation,
   incrementUserNotifications,
   deleteUser,
 } from "./users";
@@ -45,7 +46,7 @@ export {
   deleteMessage,
 } from "./messages";
 
-export { getImages, uploadImage, getDocs, uploadDoc } from "./uploads";
+export { getDoc, getFiles, uploadDoc, deleteFile } from "./uploads";
 export { getRoles, getRole, createRole, deleteRole } from "./roles";
 export { getCode } from "./code";
 export { changePassword, forgotPassword, login } from "./auth";

@@ -7,7 +7,7 @@ import swaggerUI from "swagger-ui-express";
 //import { swaggerStart } from "./docs/swagger-start";
 import { options } from "./docs/index";
 import { apiRoutes } from "./routes";
-import { morganMiddleware } from "./middlewares";
+//import { morganMiddleware } from "./middlewares";
 
 const dbClear = process.env.DB_CLEAR;
 
@@ -60,7 +60,7 @@ export class Server {
     this.app.use(express.json());
 
     // HTTP logger
-    this.app.use(morganMiddleware);
+    // this.app.use(morganMiddleware);
 
     // statics Directories
     this.app.use(express.static("public"));

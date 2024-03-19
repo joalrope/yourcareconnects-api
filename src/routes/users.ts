@@ -2,7 +2,7 @@ import { Router } from "express";
 import { body, check } from "express-validator";
 
 import { validateFields, validateJWT } from "../middlewares";
-import { emailAlreadyExists, userIdAlreadyExists } from "../helpers";
+import { userIdAlreadyExists } from "../helpers";
 import {
   createUser,
   getUsers,
@@ -19,6 +19,7 @@ import {
   thereIsSuperAdmin,
   changeUserRole,
   getUsersByEmail,
+  setUserLocation,
 } from "../controllers";
 
 export const userRouter = Router();
@@ -31,7 +32,6 @@ userRouter.post(
       min: 6,
     }),
     body("email", "The email is invalid").isEmail(),
-    body("email").custom(emailAlreadyExists),
     validateFields,
   ],
   createUser
@@ -106,6 +106,19 @@ userRouter.put(
     validateFields,
   ],
   changeActiveUserStatus
+);
+
+userRouter.put(
+  "/location/:id",
+  [
+    validateJWT,
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID").isMongoId(),
+    check("id").custom(userIdAlreadyExists),
+    body("location", "You must provide a location").notEmpty(),
+    validateFields,
+  ],
+  setUserLocation
 );
 
 userRouter.put(

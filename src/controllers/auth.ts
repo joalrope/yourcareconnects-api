@@ -43,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Verificar si el usuario esta activo
-    if (!user.isActive) {
+    /* if (!user.isActive) {
       return res.status(200).json({
         ok: false,
         statuscode: 400,
@@ -58,7 +58,7 @@ export const login = async (req: Request, res: Response) => {
           },
         },
       });
-    }
+    } */
 
     // SI el usuario está eliminado
     if (user.isDeleted) {

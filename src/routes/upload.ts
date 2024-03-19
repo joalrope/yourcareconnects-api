@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { uploader } from "../middlewares/multer";
 import { validateJWT } from "../middlewares/validate-jwt";
-import { getDocs, getImages, uploadDoc, uploadImage } from "../controllers";
+import { deleteFile, getDoc, getFiles, uploadDoc } from "../controllers";
 
 export const uploadRouter = Router();
 
 uploadRouter.use(validateJWT);
 
-uploadRouter.post("/images/:place", uploader, uploadImage);
-uploadRouter.post("/docs", uploader, uploadDoc);
-uploadRouter.get("/images", [], getImages);
-uploadRouter.get("/docs", uploader, getDocs);
+uploadRouter.post("/files", uploader, uploadDoc);
+uploadRouter.get("/files/:id/:type", [], getFiles);
+uploadRouter.get("/docs/:id/:name", [], getDoc);
+uploadRouter.delete("/docs/:id/:name", [], deleteFile);

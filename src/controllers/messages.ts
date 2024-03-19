@@ -135,8 +135,7 @@ export const saveMessage = async (msg: IMessage) => {
   const message = new Message(msg);
 
   try {
-    const saved = await message.save();
-    console.log({ saved });
+    await message.save();
   } catch (error) {
     console.log(error);
   }

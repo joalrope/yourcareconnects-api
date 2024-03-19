@@ -1,33 +1,46 @@
 //import fs from "fs";
 //import { mkdir, readdir, unlink } from "fs/promises";
 import path from "path";
+import fs from "fs";
 import { Request } from "express";
 import multer, { FileFilterCallback as FFCB } from "multer";
 import { jwtParse } from "../helpers/jwt";
+import { mkdir } from "fs/promises";
 
 const storage = multer.diskStorage({
-  destination: async (_req: Request, file, cb) => {
-    console.log("===> pdf", file);
-
-    const dir = path.join(__dirname, `../../uploads/docs`);
-
-    cb(null, dir);
-  },
-  filename: function (req: Request, file: Express.Multer.File, cb) {
+  destination: async (req: Request, file: Express.Multer.File, cb) => {
     const token = req.headers["x-token"];
     const { uid } = jwtParse(token);
-    const { place } = req.params;
+    let rootDir = path.join(__dirname, `../../uploads/${uid}`);
+    let dir!: string;
+
+    if (!fs.existsSync(`${rootDir}`)) {
+      await mkdir(`${rootDir}`);
+    }
 
     if (
       file.mimetype === "image/png" ||
       file.mimetype === "image/jpg" ||
       file.mimetype === "image/jpeg"
     ) {
-      cb(null, `${uid}-${place}-${file.originalname}`);
-      return;
+      dir = `${rootDir}/images`;
+      if (!fs.existsSync(dir)) {
+        await mkdir(`${dir}`);
+      }
     }
 
-    cb(null, `${uid}-${file.originalname}`);
+    if (file.mimetype === "application/pdf") {
+      dir = `${rootDir}/docs`;
+      if (!fs.existsSync(dir)) {
+        await mkdir(`${dir}`);
+      }
+    }
+
+    cb(null, dir);
+  },
+  filename: function (_req: Request, file: Express.Multer.File, cb) {
+    console.log({ file });
+    cb(null, file.originalname);
   },
 });
 

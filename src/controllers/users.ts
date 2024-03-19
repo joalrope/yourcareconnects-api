@@ -225,6 +225,22 @@ export const createUser = async (req: Request, res: Response) => {
   let response!: IResponse;
   let wpResponse;
 
+  try {
+    user = await User.findOne({ email });
+
+    if (user) {
+      response = {
+        ok: false,
+        msg: `There is already a user with the email: {{email}}`,
+        result: { email },
+      };
+
+      return res.status(200).json(response);
+    }
+  } catch (error) {
+    returnErrorStatus(error, res);
+  }
+
   if (role === "provider") {
     const codeDB = await User.findOne(
       { "subscription.code": code },
@@ -300,22 +316,6 @@ export const createUser = async (req: Request, res: Response) => {
     webUrl: "",
     zipCode: "",
   };
-
-  /* try {
-    userDB = await User.findOne({ email });
-  } catch (error) {
-    returnErrorStatus(error, res);
-  }
-
-  if (userDB) {
-    response = {
-      ok: false,
-      msg: `There is already a user with the email: ${email}`,
-      result: {},
-    };
-
-    return res.status(409).json(response);
-  } */
 
   try {
     user = new User({ email, password, role, ...restData, ...complement });
@@ -605,6 +605,36 @@ export const updateUserMessages = async (
   } catch (error) {
     return false;
   }
+};
+
+export const setUserLocation = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { location } = req.body;
+
+  const data = {
+    $set: {
+      location,
+    },
+  };
+
+  try {
+    await User.findByIdAndUpdate({ _id: id }, data, {
+      new: true,
+      strict: false,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      msg: "Please talk to the administrator",
+      result: { error },
+    });
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "Location updated successfully",
+    result: { location },
+  });
 };
 
 export const changeActiveUserStatus = async (req: Request, res: Response) => {

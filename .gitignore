@@ -5,7 +5,7 @@ dist/
 build/
 logs/
 #uploads/images/
-#uploads/docs/
+uploads/
 
 .env
 
