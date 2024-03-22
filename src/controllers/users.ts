@@ -223,6 +223,7 @@ export const createUser = async (req: Request, res: Response) => {
   let user!: IUser;
   let response!: IResponse;
   let wpResponse;
+  let midResponse;
 
   try {
     user = await User.findOne({ email });
@@ -265,15 +266,14 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     try {
-      wpResponse = await fetch(wpUrl, {
+      midResponse = await fetch(wpUrl, {
         method: "GET",
         headers: new Headers({
           Authorization: "Basic " + btoa(`${wpUsername}:${wpPassword}`),
           "Content-Type": "application/json",
+          Accept: "application/json",
         }),
-      })
-        .then((response) => response.json())
-        .then((data) => data);
+      });
     } catch (error) {
       logger.error("fallo req to wp: ", error);
       return res.status(500).json({
@@ -283,8 +283,21 @@ export const createUser = async (req: Request, res: Response) => {
       });
     }
 
+    if (midResponse.ok) {
+      wpResponse = await midResponse.json();
+      console.log({ wpResponse });
+    } else {
+      return res.status(200).json({
+        ok: false,
+        msg: `error getting code from WP`,
+        result: {
+          wpResponse,
+        },
+      });
+    }
+
     if (!wpResponse.id) {
-      logger.info(`The code: ${wpResponse.id} does not exist`);
+      logger.info(`The code: ${wpResponse.ok} does not exist`);
       return res.status(200).json({
         ok: false,
         msg: `The code: {{code}} does not exist`,
