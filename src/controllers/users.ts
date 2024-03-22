@@ -4,7 +4,6 @@ import { IUser, User } from "../models/index";
 import { generateJWT, sendEmail } from "../helpers";
 import { IResponse, returnErrorStatus } from "../controllers";
 import { IMessage } from "../models/user";
-import { randomLocation } from "../helpers/randomLocation";
 import { logger } from "../helpers/logger";
 
 export const getUsers = async (req: Request, res: Response) => {
@@ -301,7 +300,7 @@ export const createUser = async (req: Request, res: Response) => {
     faxNumber: "",
     location: {
       type: "Point",
-      coordinates: [randomLocation("lng"), randomLocation("lat")],
+      coordinates: [0, 0],
     },
     messages: { idchatbot: { messages: [] } },
     owner: "",

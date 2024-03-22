@@ -1,5 +1,4 @@
 import mongoose, { Document, model, Schema } from "mongoose";
-import { randomLocation } from "../helpers/randomLocation";
 
 export interface IResetPassword {
   token: string;
@@ -178,13 +177,6 @@ const UserSchema = new Schema<IUser>(
     },
     location: {
       type: location,
-      default: {
-        type: "Point",
-        coordinates: [
-          parseFloat(String(randomLocation("lng"))),
-          parseFloat(String(randomLocation("lat"))),
-        ],
-      },
     },
     serviceArea: {
       type: serviceArea,
