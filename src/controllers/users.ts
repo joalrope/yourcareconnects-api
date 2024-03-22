@@ -226,7 +226,7 @@ export const createUser = async (req: Request, res: Response) => {
   let midResponse;
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 50000);
+  const timeoutId = setTimeout(() => controller.abort(), 120000);
 
   try {
     user = await User.findOne({ email });
