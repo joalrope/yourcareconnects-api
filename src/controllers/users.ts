@@ -231,7 +231,7 @@ export const createUser = async (req: Request, res: Response) => {
       response = {
         ok: false,
         msg: `There is already a user with the email: {{email}}`,
-        result: { email },
+        result: { email, message: "Email already in use" },
       };
 
       return res.status(200).json(response);
@@ -256,7 +256,11 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(200).json({
         ok: false,
         msg: `The code: {{code}} has already been used`,
-        result: { code, subsDate: codeDB.subscription.subsDate },
+        result: {
+          code,
+          subsDate: codeDB.subscription.subsDate,
+          message: "code already in use",
+        },
       });
     }
 
@@ -275,7 +279,7 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(500).json({
         ok: false,
         msg: "Please talk to the administrator",
-        result: { error },
+        result: { error, message: "Error getting user from WP" },
       });
     }
 
@@ -284,7 +288,11 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(200).json({
         ok: false,
         msg: `The code: {{code}} does not exist`,
-        result: { code: wpResponse.id, subsDate: "" },
+        result: {
+          code: wpResponse.id,
+          subsDate: "",
+          message: "code does not exist",
+        },
       });
     }
   } else {
@@ -362,6 +370,7 @@ export const createUser = async (req: Request, res: Response) => {
     result: {
       token,
       user: user,
+      message: "User created successfully",
     },
   };
 
