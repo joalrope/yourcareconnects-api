@@ -225,6 +225,9 @@ export const createUser = async (req: Request, res: Response) => {
   let wpResponse;
   let midResponse;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 50000);
+
   try {
     user = await User.findOne({ email });
 
@@ -273,6 +276,7 @@ export const createUser = async (req: Request, res: Response) => {
           "Content-Type": "application/json",
           Accept: "application/json",
         }),
+        signal: controller.signal,
       });
     } catch (error) {
       logger.error("fallo req to wp: ", error);
@@ -284,6 +288,7 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     if (midResponse.ok) {
+      clearTimeout(timeoutId);
       wpResponse = await midResponse.json();
     } else {
       return res.status(200).json({
