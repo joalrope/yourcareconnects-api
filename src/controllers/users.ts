@@ -285,24 +285,15 @@ export const createUser = async (req: Request, res: Response) => {
 
     if (midResponse.ok) {
       wpResponse = await midResponse.json();
-      console.log({ wpResponse });
     } else {
       return res.status(200).json({
         ok: false,
-        msg: `error getting code from WP`,
+        msg: `Error verifying code: ${code} from WP`,
         result: {
           wpResponse,
         },
       });
     }
-
-    return res.status(200).json({
-      ok: true,
-      msg: `let's see if response is ok or what`,
-      result: {
-        wpResponse,
-      },
-    });
 
     if (!wpResponse.id) {
       logger.info(`The code: ${wpResponse.ok} does not exist`);
