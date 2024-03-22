@@ -296,6 +296,14 @@ export const createUser = async (req: Request, res: Response) => {
       });
     }
 
+    return res.status(200).json({
+      ok: true,
+      msg: `let's see if response is ok or what`,
+      result: {
+        wpResponse,
+      },
+    });
+
     if (!wpResponse.id) {
       logger.info(`The code: ${wpResponse.ok} does not exist`);
       return res.status(200).json({
