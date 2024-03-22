@@ -60,11 +60,11 @@ export interface IResponse {
   statuscode?: number;
 }
 
-export const returnErrorStatus = (error: any, res: Response) => {
+export const returnErrorStatus = (error: any, res: Response, adic: string) => {
   const response: IResponse = {
     ok: false,
     msg: "Please talk to the administrator",
-    result: { error },
+    result: { error, adic: adic },
   };
   return res.status(500).json(response);
 };

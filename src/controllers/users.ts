@@ -19,7 +19,7 @@ export const getUsers = async (req: Request, res: Response) => {
       User.find().skip(Number(from)).limit(Number(limit)),
     ]);
   } catch (error) {
-    returnErrorStatus(error, res);
+    returnErrorStatus(error, res, "Error getting users");
   }
 
   if (total > 0 && users.length > 0) {
@@ -53,7 +53,7 @@ export const getUser = async (req: Request, res: Response) => {
   try {
     userDB = await User.findById(id);
   } catch (error) {
-    returnErrorStatus(error, res);
+    returnErrorStatus(error, res, "Error getting user");
   }
 
   if (userDB!) {
@@ -149,7 +149,7 @@ export const getUsersByIsActive = async (req: Request, res: Response) => {
         .limit(Number(limit)),
     ]);
   } catch (error) {
-    returnErrorStatus(error, res);
+    returnErrorStatus(error, res, "Error getting users");
   }
 
   if (total > 0 && users.length > 0) {
@@ -237,7 +237,7 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(200).json(response);
     }
   } catch (error) {
-    returnErrorStatus(error, res);
+    returnErrorStatus(error, res, "Error creating user, check your email");
   }
 
   if (role === "provider") {
@@ -327,7 +327,7 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     user = new User({ email, password, role, ...restData, ...complement });
   } catch (error) {
-    returnErrorStatus(error, res);
+    returnErrorStatus(error, res, "Error new user");
   }
 
   const token = await generateJWT(user.id, user.email, user.role);
@@ -338,7 +338,7 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     await user.save();
   } catch (error) {
-    returnErrorStatus(error, res);
+    returnErrorStatus(error, res, "Error saving new user");
   }
 
   if (user.role === "provider") {
@@ -402,7 +402,7 @@ export const getUsersByServices = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    returnErrorStatus(error, res);
+    returnErrorStatus(error, res, "Error getting users by services");
   }
 
   if (users!?.length > 0) {
@@ -512,7 +512,7 @@ export const clearUserNotifications = async (req: Request, res: Response) => {
       }
     );
   } catch (error) {
-    return returnErrorStatus(error, res);
+    return returnErrorStatus(error, res, "Error clearing user notifications");
   }
 
   if (user) {
@@ -660,7 +660,7 @@ export const changeActiveUserStatus = async (req: Request, res: Response) => {
       }
     );
   } catch (error) {
-    return returnErrorStatus(error, res);
+    return returnErrorStatus(error, res, "Error changing user status");
   }
 
   return res.status(200).json({
@@ -687,7 +687,7 @@ export const changeUserRole = async (req: Request, res: Response) => {
       }
     );
   } catch (error) {
-    return returnErrorStatus(error, res);
+    return returnErrorStatus(error, res, "Error changing user role");
   }
 
   return res.status(200).json({
