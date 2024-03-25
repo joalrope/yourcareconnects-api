@@ -66,3 +66,13 @@ export const getCode = async (req: Request, res: Response) => {
     result: { code: resp.id, subsDate: resp.date_created },
   });
 };
+
+export const setCode = async (req: Request, res: Response) => {
+  const { code } = req.params;
+
+  res.status(200).json({
+    ok: true,
+    msg: `The code: {{code}} was successfully obtained`,
+    result: { code },
+  });
+};

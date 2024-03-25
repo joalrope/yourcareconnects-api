@@ -48,7 +48,7 @@ export {
 
 export { getDoc, getFiles, uploadDoc, deleteFile } from "./uploads";
 export { getRoles, getRole, createRole, deleteRole } from "./roles";
-export { getCode } from "./code";
+export { getCode, setCode } from "./code";
 export { changePassword, forgotPassword, login } from "./auth";
 export { geti18n } from "./i18n";
 export { searchUser, searchService } from "./search";

@@ -283,17 +283,18 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(500).json({
         ok: false,
         msg: "Please talk to the administrator",
-        result: { error, message: "Error getting user from WP" },
+        result: { error, message: "Error getting code from WP" },
       });
+    } finally {
+      clearTimeout(timeoutId);
     }
 
     if (midResponse.ok) {
-      clearTimeout(timeoutId);
       wpResponse = await midResponse.json();
     } else {
       return res.status(200).json({
         ok: false,
-        msg: `Error verifying code: ${code} from WP`,
+        msg: `This code: ${code} does not exist`,
         result: {
           wpResponse,
         },
@@ -301,7 +302,6 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     if (!wpResponse.id) {
-      logger.info(`The code: ${wpResponse.ok} does not exist`);
       return res.status(200).json({
         ok: false,
         msg: `The code: {{code}} does not exist`,
