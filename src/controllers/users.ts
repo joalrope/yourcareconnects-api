@@ -294,7 +294,7 @@ export const createUser = async (req: Request, res: Response) => {
     } else {
       return res.status(200).json({
         ok: false,
-        msg: `This code: ${code} does not exist`,
+        msg: `The code: ${code} does not exist`,
         result: {
           wpResponse,
         },
