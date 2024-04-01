@@ -7,20 +7,20 @@ import {
   createUser,
   getUsers,
   getUser,
-  getUsersByServices,
   updateUser,
   deleteUser,
+  getUsersByEmail,
+  changeUserRole,
+  getUsersByServices,
   updateUserContacts,
-  //updateUserMessages,
   getUserMessages,
   clearUserNotifications,
   getUsersByIsActive,
-  changeActiveUserStatus,
+  changeDeletedUserStatus,
   thereIsSuperAdmin,
-  changeUserRole,
-  getUsersByEmail,
   setUserLocation,
 } from "../controllers";
+import { changeActiveUserStatus } from "../controllers/users";
 
 export const userRouter = Router();
 
@@ -106,6 +106,18 @@ userRouter.put(
     validateFields,
   ],
   changeActiveUserStatus
+);
+
+userRouter.put(
+  "/deleted/:id/:value",
+  [
+    validateJWT,
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID").isMongoId(),
+    check("id").custom(userIdAlreadyExists),
+    validateFields,
+  ],
+  changeDeletedUserStatus
 );
 
 userRouter.put(

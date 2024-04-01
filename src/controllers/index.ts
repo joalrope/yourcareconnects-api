@@ -15,7 +15,7 @@ export {
   updateUser,
   updateUserContacts,
   updateUserMessages,
-  changeActiveUserStatus,
+  changeDeletedUserStatus,
   changeUserRole,
   setUserLocation,
   incrementUserNotifications,

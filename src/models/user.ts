@@ -253,14 +253,6 @@ const UserSchema = new Schema<IUser>(
 
 UserSchema.index({ location: "2dsphere" });
 
-UserSchema.pre("find", function () {
-  this.where({ isDeleted: false });
-});
-
-UserSchema.pre("findOne", function () {
-  this.where({ isDeleted: false });
-});
-
 UserSchema.methods.toJSON = function () {
   const { __v, password, _id, ...user } = this.toObject();
   user.id = _id;

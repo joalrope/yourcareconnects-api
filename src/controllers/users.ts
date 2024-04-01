@@ -117,7 +117,7 @@ export const getUsersByEmail = async (req: Request, res: Response) => {
 };
 
 export const getUsersByIsActive = async (req: Request, res: Response) => {
-  const { limit = 5, from = 0 } = req.query;
+  const { limit = 50, from = 0 } = req.query;
   const { typeUser } = req.params;
   let query = {};
 
@@ -125,6 +125,8 @@ export const getUsersByIsActive = async (req: Request, res: Response) => {
     query = { isActive: true, isDeleted: false };
   } else if (typeUser === "inactive") {
     query = { isActive: false, isDeleted: false };
+  } else if (typeUser === "deleted") {
+    query = { isDeleted: true };
   } else {
     query = { isDeleted: false };
   }
@@ -135,15 +137,17 @@ export const getUsersByIsActive = async (req: Request, res: Response) => {
 
   try {
     [total, users] = await Promise.all([
-      User.countDocuments({ isDeleted: false }),
+      User.countDocuments(query),
       User.find(query, {
         email: 1,
         names: 1,
         lastName: 1,
         role: 1,
         phoneNumber: 1,
+        pictures: 1,
         services: 1,
         isActive: 1,
+        isDeleted: 1,
       })
         .skip(Number(from))
         .limit(Number(limit)),
@@ -404,6 +408,8 @@ export const getUsersByServices = async (req: Request, res: Response) => {
   try {
     users = await User.find({
       role: "provider",
+      isDeleted: false,
+      isActive: true,
       services: {
         $in: [...services],
       },
@@ -676,6 +682,8 @@ export const changeActiveUserStatus = async (req: Request, res: Response) => {
         strict: false,
       }
     );
+
+    console.log({ userActive: user.isActive });
   } catch (error) {
     return returnErrorStatus(error, res, "Error changing user status");
   }
@@ -732,6 +740,50 @@ export const deleteUser = async (req: Request, res: Response) => {
 
   try {
     user = await User.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      msg: "Please talk to the administrator",
+      result: { error },
+    });
+  }
+
+  if (!user) {
+    return res.status(404).json({
+      ok: false,
+      msg: "User not found",
+      result: {},
+    });
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "User deleted successfully",
+    result: { user },
+  });
+};
+
+export const changeDeletedUserStatus = async (req: Request, res: Response) => {
+  const { id, value } = req.params;
+  const role = req.headers["x-role"];
+
+  if (role === "customer" || role === "provider") {
+    return res.status(401).json({
+      ok: false,
+      msg: "Unauthorized",
+      result: {},
+    });
+  }
+
+  let user: IUser = {} as IUser;
+
+  try {
+    user = await User.findByIdAndUpdate(
+      id,
+      { $set: { isDeleted: JSON.parse(value) } },
+      { new: true }
+    );
+    console.log({ userActive: user.isActive });
   } catch (error) {
     return res.status(500).json({
       ok: false,

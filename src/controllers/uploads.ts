@@ -93,12 +93,9 @@ export const deleteFile = async (req: Req, res: Resp) => {
 
   try {
     fs.unlinkSync(dir);
-    console.log("File removed");
   } catch (err) {
     console.error("Something wrong happened removing the file", err);
   }
-
-  console.log({ id, name });
 
   res.status(200).json({
     ok: true,

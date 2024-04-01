@@ -39,7 +39,6 @@ const storage = multer.diskStorage({
     cb(null, dir);
   },
   filename: function (_req: Request, file: Express.Multer.File, cb) {
-    console.log({ file });
     cb(null, file.originalname);
   },
 });

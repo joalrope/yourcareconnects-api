@@ -24,8 +24,3 @@ export const decrypt = (text: any) => {
 
   return decrypted.toString();
 };
-
-// Text send to encrypt function
-//var hw = encrypt("Welcome to Tutorials Point...");
-//console.log(hw);
-//console.log(decrypt(hw));
