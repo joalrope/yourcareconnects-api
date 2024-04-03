@@ -263,13 +263,14 @@ export const createUser = async (req: Request, res: Response) => {
   }
 
   if (code === ownerCode) {
+    console.log("entro a owner");
     role = "owner";
   } else if (code === developerCode) {
+    console.log("entro a developer");
     role = "developer";
   } else if (code === superadminCode) {
+    console.log("entro a superadmin");
     role = "superadmin";
-  } else {
-    role = "provider";
   }
 
   console.log({ code, role });
