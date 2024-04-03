@@ -74,14 +74,14 @@ export const getUser = async (req: Request, res: Response) => {
   return res.status(409).json(response);
 };
 
-export const thereIsSuperAdmin = async (_req: Request, res: Response) => {
-  const user = await User.findOne({ role: "superadmin" });
+export const thereIsSupport = async (_req: Request, res: Response) => {
+  const user = await User.findOne({ role: "owner" });
 
   const result = user ? true : false;
 
   const response = {
     ok: result,
-    msg: `There is ${result ? "a" : "no"} a superadmin`,
+    msg: `There is ${result ? "a" : "no"} a support`,
     result: { result },
   };
   return res.status(200).json(response);
@@ -122,13 +122,21 @@ export const getUsersByIsActive = async (req: Request, res: Response) => {
   let query = {};
 
   if (typeUser === "active") {
-    query = { isActive: true, isDeleted: false };
+    query = {
+      isActive: true,
+      isDeleted: false,
+      role: "provider",
+    };
   } else if (typeUser === "inactive") {
-    query = { isActive: false, isDeleted: false };
+    query = {
+      isActive: false,
+      isDeleted: false,
+      role: "provider",
+    };
   } else if (typeUser === "deleted") {
-    query = { isDeleted: true };
+    query = { isDeleted: true, role: "provider" };
   } else {
-    query = { isDeleted: false };
+    query = { isDeleted: false, role: { $in: ["provider", "customer"] } };
   }
 
   let total: number = 0;
@@ -218,8 +226,9 @@ export const getUserMessages = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { email, password, code, role, ...restData } = req.body;
+  let { email, password, code, role, ...restData } = req.body;
 
+  const codeAssignment = process.env.CODE_ASSIGNMENT;
   const wpUsername = process.env.WP_USERNAME;
   const wpPassword = process.env.WP_PASSWORD;
   const wpUrl = `${process.env.WP_URL}/${code}`;
@@ -229,23 +238,38 @@ export const createUser = async (req: Request, res: Response) => {
   let wpResponse;
   let midResponse;
 
+  const codeAssignmentSplited = String(codeAssignment).split("|");
+  const ownerCode = codeAssignmentSplited[0];
+  const developerCode = codeAssignmentSplited[1];
+  const superadminCode = codeAssignmentSplited[2];
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 120000);
 
   try {
     user = await User.findOne({ email });
-
-    if (user) {
-      response = {
-        ok: false,
-        msg: `There is already a user with the email: {{email}}`,
-        result: { email, message: "Email already in use" },
-      };
-
-      return res.status(200).json(response);
-    }
   } catch (error) {
     returnErrorStatus(error, res, "Error creating user, check your email");
+  }
+
+  if (user) {
+    response = {
+      ok: false,
+      msg: `There is already a user with the email: {{email}}`,
+      result: { email, message: "Email already in use" },
+    };
+
+    return res.status(200).json(response);
+  }
+
+  if (code === ownerCode) {
+    role = "owner";
+  } else if (code === developerCode) {
+    role = "developer";
+  } else if (code === superadminCode) {
+    role = "superadmin";
+  } else {
+    role = "provider";
   }
 
   if (role === "provider") {
@@ -283,10 +307,9 @@ export const createUser = async (req: Request, res: Response) => {
         signal: controller.signal,
       });
     } catch (error) {
-      logger.error("fallo req to wp: ", error);
-      return res.status(500).json({
+      return res.status(200).json({
         ok: false,
-        msg: "Please talk to the administrator",
+        msg: "Error getting code from Wordpress",
         result: { error, message: "Error getting code from WP" },
       });
     } finally {
@@ -294,7 +317,15 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     if (midResponse.ok) {
-      wpResponse = await midResponse.json();
+      try {
+        wpResponse = await midResponse.json();
+      } catch (error) {
+        return res.status(500).json({
+          ok: false,
+          msg: "Please talk to the administrator",
+          result: { error, message: "Error getting code from WP" },
+        });
+      }
     } else {
       return res.status(200).json({
         ok: false,
@@ -331,6 +362,7 @@ export const createUser = async (req: Request, res: Response) => {
       type: "Point",
       coordinates: [0, 0],
     },
+    contacts: [],
     messages: { idchatbot: { messages: [] } },
     owner: "",
     picture: "",
@@ -362,7 +394,7 @@ export const createUser = async (req: Request, res: Response) => {
     returnErrorStatus(error, res, "Error saving new user");
   }
 
-  if (user.role === "provider") {
+  if (user.role === "provider" || user.role === "customer") {
     const mailOptions = {
       from: `${process.env.EMAIL_ADDRESS}`,
       to: "drivera@yourcareconnects.com",
@@ -371,7 +403,11 @@ export const createUser = async (req: Request, res: Response) => {
       html: `
       <h2 style="margin:0px;">New Provider</h1>
       <br />
-      <p style="margin:0px;">A new provider has registered, please review and make the respective approval or rejection <span>
+      <p style="margin:0px;">A new ${user.role} has registered</p>
+      <p>${
+        user.role === "provider" &&
+        "Please review and make the respective approval or rejection in the dashboard"
+      } </p>
       <div style="margin: 64px;text-align: center">
       <h3>User Data</h2>
       <h5>Names: ${`${user.names}`}</h5>
@@ -682,8 +718,6 @@ export const changeActiveUserStatus = async (req: Request, res: Response) => {
         strict: false,
       }
     );
-
-    console.log({ userActive: user.isActive });
   } catch (error) {
     return returnErrorStatus(error, res, "Error changing user status");
   }
@@ -783,7 +817,6 @@ export const changeDeletedUserStatus = async (req: Request, res: Response) => {
       { $set: { isDeleted: JSON.parse(value) } },
       { new: true }
     );
-    console.log({ userActive: user.isActive });
   } catch (error) {
     return res.status(500).json({
       ok: false,

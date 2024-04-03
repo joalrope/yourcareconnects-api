@@ -77,6 +77,37 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
+    // Insetar support contact id
+    const support = await User.findOne({ role: "owner" }, { id: 1 });
+
+    if (!user.contacts.includes(support!._id)) {
+      if (user.role !== "owner") {
+        user.contacts.push(support.id);
+      }
+
+      await User.findByIdAndUpdate(
+        { _id: user.id },
+        {
+          $push: { contacts: support.id },
+        },
+        {
+          new: true,
+          strict: false,
+        }
+      );
+
+      await User.findByIdAndUpdate(
+        { _id: support.id },
+        {
+          $push: { contacts: user.id },
+        },
+        {
+          new: true,
+          strict: false,
+        }
+      );
+    }
+
     // Generar el JWT
     const token = await generateJWT(user.id, user.email, user.role);
 

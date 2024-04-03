@@ -231,7 +231,7 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: true,
       default: "customer",
-      enum: ["superadmin", "admin", "customer", "provider"],
+      enum: ["owner", "developer", "superadmin", "provider", "customer"],
     },
     isDeleted: {
       type: Boolean,

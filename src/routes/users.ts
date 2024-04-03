@@ -17,10 +17,10 @@ import {
   clearUserNotifications,
   getUsersByIsActive,
   changeDeletedUserStatus,
-  thereIsSuperAdmin,
   setUserLocation,
+  thereIsSupport,
+  changeActiveUserStatus,
 } from "../controllers";
-import { changeActiveUserStatus } from "../controllers/users";
 
 export const userRouter = Router();
 
@@ -38,7 +38,7 @@ userRouter.post(
 );
 
 userRouter.get("/", getUsers);
-userRouter.get("/sarole", thereIsSuperAdmin);
+userRouter.get("/sarole", thereIsSupport);
 userRouter.get("/isActive/:typeUser", getUsersByIsActive);
 userRouter.get("/email/:email", getUsersByEmail);
 userRouter.get("/services/:rng/:lat/:lng", getUsersByServices);

@@ -11,7 +11,7 @@ export {
   getUsersByEmail,
   clearUserNotifications,
   createUser,
-  thereIsSuperAdmin,
+  thereIsSupport,
   updateUser,
   updateUserContacts,
   updateUserMessages,
@@ -20,6 +20,7 @@ export {
   setUserLocation,
   incrementUserNotifications,
   deleteUser,
+  changeActiveUserStatus,
 } from "./users";
 export {
   getServices,
