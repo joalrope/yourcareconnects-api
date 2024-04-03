@@ -35,6 +35,8 @@ export class Server {
 
     // seed database with first data
 
+    console.log({ dbClear });
+
     if (dbClear === "true") {
       seedDB();
     }
