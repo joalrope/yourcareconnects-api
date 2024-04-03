@@ -50,4 +50,6 @@ export const seedDB = async () => {
   await Modality.deleteMany({});
   await Modality.insertMany(modalitiesJson);
   await User.deleteMany({});
+
+  console.log("Database seeded successfully");
 };

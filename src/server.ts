@@ -9,7 +9,7 @@ import { options } from "./docs/index";
 import { apiRoutes } from "./routes";
 //import { morganMiddleware } from "./middlewares";
 
-const dbClear = process.env.DB_CLEAR;
+const dbClear = String(process.env.DB_CLEAR);
 
 export class Server {
   app: Express;
