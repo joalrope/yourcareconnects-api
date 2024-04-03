@@ -272,6 +272,8 @@ export const createUser = async (req: Request, res: Response) => {
     role = "provider";
   }
 
+  console.log({ code, role });
+
   if (role === "provider") {
     const codeDB = await User.findOne(
       { "subscription.code": code },
