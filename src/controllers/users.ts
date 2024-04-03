@@ -228,7 +228,7 @@ export const getUserMessages = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
   let { email, password, code, role, ...restData } = req.body;
 
-  const codeAssignment = process.env.CODE_ASSIGNMENT;
+  const codeAssignment = process.env.MASTER_CODES;
   const wpUsername = process.env.WP_USERNAME;
   const wpPassword = process.env.WP_PASSWORD;
   const wpUrl = `${process.env.WP_URL}/${code}`;
@@ -263,17 +263,14 @@ export const createUser = async (req: Request, res: Response) => {
   }
 
   if (code === ownerCode) {
-    console.log("entro a owner");
     role = "owner";
   } else if (code === developerCode) {
-    console.log("entro a developer");
     role = "developer";
   } else if (code === superadminCode) {
-    console.log("entro a superadmin");
     role = "superadmin";
+  } else {
+    role = "provider";
   }
-
-  console.log({ code, ownerCode, developerCode, superadminCode, role });
 
   if (role === "provider") {
     const codeDB = await User.findOne(
