@@ -268,8 +268,6 @@ export const createUser = async (req: Request, res: Response) => {
     role = "developer";
   } else if (code === superadminCode) {
     role = "superadmin";
-  } else {
-    role = "provider";
   }
 
   if (role === "provider") {
