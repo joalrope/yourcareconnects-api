@@ -273,7 +273,7 @@ export const createUser = async (req: Request, res: Response) => {
     role = "superadmin";
   }
 
-  console.log({ code, role });
+  console.log({ code, ownerCode, developerCode, superadminCode, role });
 
   if (role === "provider") {
     const codeDB = await User.findOne(
