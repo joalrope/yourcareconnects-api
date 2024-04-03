@@ -239,9 +239,9 @@ export const createUser = async (req: Request, res: Response) => {
   let midResponse;
 
   const codeAssignmentSplited = String(codeAssignment).split("|");
-  const ownerCode = codeAssignmentSplited[0];
-  const developerCode = codeAssignmentSplited[1];
-  const superadminCode = codeAssignmentSplited[2];
+  const ownerCode = String(codeAssignmentSplited[0]);
+  const developerCode = String(codeAssignmentSplited[1]);
+  const superadminCode = String(codeAssignmentSplited[2]);
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 120000);
@@ -271,9 +271,6 @@ export const createUser = async (req: Request, res: Response) => {
   } else {
     role = "provider";
   }
-
-  console.log({ code });
-  logger.info(`The code: ${code} was assigned to: ${role}`);
 
   if (role === "provider") {
     const codeDB = await User.findOne(
