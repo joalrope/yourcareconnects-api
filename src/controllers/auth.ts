@@ -234,7 +234,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
   return res.status(200).json({
     ok: true,
-    msg: `password changed to ${`http://localhost:5000/reset/${init}/${code}/${data}`}`,
+    msg: `password changed to ${`https://app.yourcareconnects.com/reset/${init}/${code}/${data}`}`,
     result: {},
   });
 };
