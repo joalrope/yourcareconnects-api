@@ -214,7 +214,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
         <img src="https://yourcareconnects.com/wp-content/uploads/2023/08/cropped-your-care-connects-logo-letras-blancas-02-1024x501.png" alt="yourcareconnects logo" width="100px"/>
       </div>
       <div>
-        <p style="margin:0px;">At <span>http://yourcareconnects.com/</span> we have received a request to reset your password. To reset your password please click on this button:
+        <p style="margin:0px;">At <span>https://yourcareconnects.com/</span> we have received a request to reset your password. To reset your password please click on this button:
         <div style="margin: 64px;text-align: center">
           <a style="block:inline;border:1px solid #1a1a13;border-radius:5px;height:60px;padding:5px 25px;margin:120px;text-decoration:none;background:#fbd467;color:#1a1a13;font-family: arial, sans-serif;font-size: 1em;line-height:1em;white-space: nowrap" href="http://localhost:3000/auth/change-password/${init}/${code}/${data}">Reset your password</a>
         </div>
