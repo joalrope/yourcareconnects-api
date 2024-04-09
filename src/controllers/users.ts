@@ -441,7 +441,7 @@ export const getUsersByServices = async (req: Request, res: Response) => {
 
   try {
     users = await User.find({
-      role: "provider",
+      role: { $ne: "customer" },
       isDeleted: false,
       isActive: true,
       services: {
