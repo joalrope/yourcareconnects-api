@@ -1,6 +1,5 @@
 //import fs from "fs";
 //import { mkdir, readdir, unlink } from "fs/promises";
-import path from "path";
 import fs from "fs";
 import { Request } from "express";
 import multer, { FileFilterCallback as FFCB } from "multer";
@@ -11,7 +10,7 @@ const storage = multer.diskStorage({
   destination: async (req: Request, file: Express.Multer.File, cb) => {
     const token = req.headers["x-token"];
     const { uid } = jwtParse(token);
-    let rootDir = path.join(__dirname, `../../uploads/${uid}`);
+    let rootDir = `/uploads/${uid}`;
     let dir!: string;
 
     if (!fs.existsSync(`${rootDir}`)) {
