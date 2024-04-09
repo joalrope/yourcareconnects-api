@@ -1,24 +1,33 @@
 //import fs from "fs";
 //import { mkdir, readdir, unlink } from "fs/promises";
 import fs from "fs";
+import path from "path";
 import { Request } from "express";
 import multer, { FileFilterCallback as FFCB } from "multer";
 import { jwtParse } from "../helpers/jwt";
 import { mkdir } from "fs/promises";
 
+const diskMountPath =
+  process.env.NODE_ENV === "development"
+    ? path.join(__dirname, "../../../Backend/")
+    : process.env.DISK_MOUNT_PATH;
+
 const storage = multer.diskStorage({
   destination: async (req: Request, file: Express.Multer.File, cb) => {
     const token = req.headers["x-token"];
     const { uid } = jwtParse(token);
-    // TODO: move to .env
-    let rootDir = `/var/data/uploads/${uid}`;
+    let uploadsPath = `${diskMountPath}/uploads`;
 
-    let dir!: string;
+    if (!fs.existsSync(uploadsPath)) {
+      await mkdir(uploadsPath);
+    }
 
-    console.log({ dir: __dirname });
+    let userDir = `${uploadsPath}/${uid}`;
 
-    if (!fs.existsSync(`${rootDir}`)) {
-      await mkdir(`${rootDir}`);
+    let docsDir!: string;
+
+    if (!fs.existsSync(`${userDir}`)) {
+      await mkdir(`${userDir}`);
     }
 
     if (
@@ -26,20 +35,20 @@ const storage = multer.diskStorage({
       file.mimetype === "image/jpg" ||
       file.mimetype === "image/jpeg"
     ) {
-      dir = `${rootDir}/images`;
-      if (!fs.existsSync(dir)) {
-        await mkdir(`${dir}`);
+      docsDir = `${userDir}/images`;
+      if (!fs.existsSync(docsDir)) {
+        await mkdir(`${docsDir}`);
       }
     }
 
     if (file.mimetype === "application/pdf") {
-      dir = `${rootDir}/docs`;
-      if (!fs.existsSync(dir)) {
-        await mkdir(`${dir}`);
+      docsDir = `${userDir}/docs`;
+      if (!fs.existsSync(docsDir)) {
+        await mkdir(`${docsDir}`);
       }
     }
 
-    cb(null, dir);
+    cb(null, docsDir);
   },
   filename: function (_req: Request, file: Express.Multer.File, cb) {
     cb(null, file.originalname);

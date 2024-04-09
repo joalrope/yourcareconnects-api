@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import { createServer } from "http";
+import { config } from "dotenv";
 import cors from "cors";
 import { dbConnection, seedDB } from "./database/config";
 import { setupSockets } from "./socket/socket";
@@ -8,6 +9,8 @@ import swaggerUI from "swagger-ui-express";
 import { options } from "./docs/index";
 import { apiRoutes } from "./routes";
 import { morganMiddleware } from "./middlewares";
+
+config();
 
 const dbClear = String(process.env.DB_CLEAR);
 
@@ -47,11 +50,17 @@ export class Server {
   }
 
   middlewares() {
+    const uploadsPath =
+      process.env.NODE_ENV === "development"
+        ? "uploads"
+        : `${process.env.DISK_MOUNT_PATH}/uploads`;
+
     // CORS
     const origin = [
       String(process.env.URL_BASE1),
       String(process.env.URL_BASE2),
     ];
+
     this.app.use(
       cors({
         origin,
@@ -66,7 +75,7 @@ export class Server {
 
     // statics Directories
     this.app.use(express.static("public"));
-    this.app.use(express.static("uploads"));
+    this.app.use(express.static(uploadsPath));
 
     // Swagger integration
     this.app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(options));

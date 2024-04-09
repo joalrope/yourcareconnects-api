@@ -51,8 +51,14 @@ export const getDoc = async (req: Req, res: Resp) => {
 
 export const getFiles = async (req: Req, res: Resp) => {
   const { id, type } = req.params;
+  const diskMountPath =
+    process.env.NODE_ENV === "development"
+      ? path.join(__dirname, `../../../Backend`)
+      : process.env.DISK_MOUNT_PATH;
 
-  const dir = path.join(__dirname, `../../uploads/${id}/${type}`);
+  const dir = `${diskMountPath}/uploads/${id}/${type}`;
+
+  console.log({ dirLocal: dir });
 
   if (!fs.existsSync(`${dir}`)) {
     return res.status(200).json({
@@ -71,10 +77,14 @@ export const getFiles = async (req: Req, res: Resp) => {
       uid: `${String(index + 1)}`,
       name: file,
       status: "done",
-      url: `${req.protocol}://${req.hostname}:${process.env.PORT}/uploads/${id}/${type}/${file}`,
+      url:
+        process.env.NODE_ENV === "development"
+          ? `${req.protocol}://${req.hostname}:${process.env.PORT}/uploads/${id}/${type}/${file}`
+          : `${process.env.PORT}/uploads/${id}/${type}/${file}`,
     });
   });
 
+  console.log({ fileList });
   return res.status(200).json({
     ok: true,
     msg: "files successfully obtained",
