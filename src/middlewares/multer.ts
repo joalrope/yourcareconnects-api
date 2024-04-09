@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
     const token = req.headers["x-token"];
     const { uid } = jwtParse(token);
     // TODO: move to .env
-    let rootDir = `./var/data/uploads/${uid}`;
+    let rootDir = `/opt/render/project/src/var/data/uploads/${uid}`;
 
     let dir!: string;
 
