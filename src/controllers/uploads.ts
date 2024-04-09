@@ -80,7 +80,7 @@ export const getFiles = async (req: Req, res: Resp) => {
       url:
         process.env.NODE_ENV === "development"
           ? `${req.protocol}://${req.hostname}:${process.env.PORT}/uploads/${id}/${type}/${file}`
-          : `${process.env.PORT}/uploads/${id}/${type}/${file}`,
+          : `${process.env.DISK_MOUNT_PATH}/uploads/${id}/${type}/${file}`,
     });
   });
 
