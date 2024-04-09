@@ -10,7 +10,9 @@ const storage = multer.diskStorage({
   destination: async (req: Request, file: Express.Multer.File, cb) => {
     const token = req.headers["x-token"];
     const { uid } = jwtParse(token);
-    let rootDir = `/uploads/${uid}`;
+    // TODO: move to .env
+    let rootDir = `/opt/render/project/src/uploads/${uid}`;
+
     let dir!: string;
 
     console.log({ dir: __dirname });
