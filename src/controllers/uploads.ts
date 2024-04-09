@@ -99,7 +99,10 @@ export const deleteFile = async (req: Req, res: Resp) => {
 
   const type = ext === "pdf" ? "docs" : "images";
 
-  let dir = path.join(__dirname, `../../uploads/${id}/${type}/${name}`);
+  let dir =
+    process.env.NODE_ENV === "development"
+      ? path.join(__dirname, `../../uploads/${id}/${type}/${name}`)
+      : `${process.env.DISK_MOUNT_PATH}/uploads/${id}/${type}/${name}`;
 
   try {
     fs.unlinkSync(dir);

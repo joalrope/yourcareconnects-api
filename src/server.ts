@@ -55,8 +55,6 @@ export class Server {
         ? "uploads"
         : `${process.env.DISK_MOUNT_PATH}/uploads`;
 
-    console.log({ uploadsPath });
-
     // CORS
     const origin = [
       String(process.env.URL_BASE1),
