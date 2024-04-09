@@ -13,6 +13,8 @@ const storage = multer.diskStorage({
     let rootDir = `/uploads/${uid}`;
     let dir!: string;
 
+    console.log({ dir: __dirname });
+
     if (!fs.existsSync(`${rootDir}`)) {
       await mkdir(`${rootDir}`);
     }
