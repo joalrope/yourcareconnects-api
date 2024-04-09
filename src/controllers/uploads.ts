@@ -22,7 +22,11 @@ export const uploadDoc = async (_req: Req, res: Resp) => {
 export const getDoc = async (req: Req, res: Resp) => {
   const { id, name } = req.params;
 
-  const dir = path.join(__dirname, `../../uploads/${id}/docs`);
+  //TODO:: Cambiar path para la ruta correcta en produccion
+  const dir =
+    process.env.NODE_ENV === "development"
+      ? path.join(__dirname, `../../uploads/${id}/docs`)
+      : `${process.env.DISK_MOUNT_PATH}/uploads/${id}/docs`;
   const fullPath = `${dir}/${name}`;
   const pdfBytes = fs.readFileSync(fullPath);
   const pdfDoc = await PDFDocument.load(pdfBytes);
