@@ -22,7 +22,9 @@ export const clearContacts = async (_req: Request, res: Response) => {
 
     user.contacts?.map((contact) => {
       if (!newContacts.includes(contact)) {
-        newContacts.push(contact);
+        if (contact !== user._id) {
+          newContacts.push(contact);
+        }
       }
     });
 
