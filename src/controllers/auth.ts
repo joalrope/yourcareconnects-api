@@ -83,11 +83,7 @@ export const login = async (req: Request, res: Response) => {
       { _id: 1, contacts: 1 }
     );
 
-    if (!user.contacts.includes(support!._id)) {
-      if (user.role !== "owner") {
-        user.contacts.push(support!._id);
-      }
-
+    if (!user.contacts.includes(support!._id) && user.role !== "owner") {
       await User.findByIdAndUpdate(
         { _id: user.id },
         {
