@@ -1,4 +1,5 @@
 import { Express, Response } from "express";
+import { modalityRouter } from "./modality";
 import { serviceRouter } from "./service";
 import { messageRouter } from "./messages";
 import { uploadRouter } from "./upload";
@@ -8,7 +9,7 @@ import { roleRouter } from "./roles";
 import { codeRouter } from "./code";
 import { authRouter } from "./auth";
 import { i18nRouter } from "./i18n";
-import { modalityRouter } from "./modality";
+import { devRouter } from "./dev";
 
 interface Paths {
   services: string;
@@ -21,6 +22,7 @@ interface Paths {
   codes: string;
   i18n: string;
   auth: string;
+  dev: string;
 }
 
 const paths: Paths = {
@@ -34,6 +36,7 @@ const paths: Paths = {
   codes: "/api/codes",
   i18n: "/api/i18n",
   auth: "/api/auth",
+  dev: "/api/dev",
 };
 
 export const apiRoutes = (app: Express) => {
@@ -47,6 +50,7 @@ export const apiRoutes = (app: Express) => {
   app.use(paths.codes, codeRouter);
   app.use(paths.i18n, i18nRouter);
   app.use(paths.auth, authRouter);
+  app.use(paths.dev, devRouter);
   app.use(function (_, res: Response) {
     res.redirect("/");
   });

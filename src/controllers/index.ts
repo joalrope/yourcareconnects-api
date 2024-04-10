@@ -53,6 +53,7 @@ export { getCode, setCode } from "./code";
 export { changePassword, forgotPassword, login } from "./auth";
 export { geti18n } from "./i18n";
 export { searchUser, searchService } from "./search";
+export { clearContacts, userHardDelete } from "./dev";
 
 export interface IResponse {
   ok: boolean;

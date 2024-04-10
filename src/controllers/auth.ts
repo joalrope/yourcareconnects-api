@@ -43,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Verificar si el usuario esta activo
-    /* if (!user.isActive) {
+    if (!user.isActive) {
       return res.status(200).json({
         ok: false,
         statuscode: 400,
@@ -58,7 +58,7 @@ export const login = async (req: Request, res: Response) => {
           },
         },
       });
-    } */
+    }
 
     // SI el usuario está eliminado
     if (user.isDeleted) {
@@ -78,11 +78,14 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Insetar support contact id
-    const support = await User.findOne({ role: "owner" }, { id: 1 });
+    const support = await User.findOne(
+      { role: "owner" },
+      { _id: 1, contacts: 1 }
+    );
 
     if (!user.contacts.includes(support!._id)) {
       if (user.role !== "owner") {
-        user.contacts.push(support.id);
+        user.contacts.push(support!._id);
       }
 
       await User.findByIdAndUpdate(
@@ -95,7 +98,9 @@ export const login = async (req: Request, res: Response) => {
           strict: false,
         }
       );
+    }
 
+    if (!support!.contacts.includes(user.id)) {
       await User.findByIdAndUpdate(
         { _id: support.id },
         {
