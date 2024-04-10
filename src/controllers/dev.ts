@@ -23,7 +23,7 @@ export const clearContacts = async (_req: Request, res: Response) => {
     user.contacts?.map((contact) => {
       if (!newContacts.includes(contact)) {
         console.log({ first: contact, second: user._id });
-        if (String(contact) !== String(user._id)) {
+        if (user.role !== "owner") {
           newContacts.push(contact);
         }
       }
