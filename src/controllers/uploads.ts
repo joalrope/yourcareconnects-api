@@ -62,8 +62,6 @@ export const getFiles = async (req: Req, res: Resp) => {
 
   const dir = `${diskMountPath}/uploads/${id}/${type}`;
 
-  console.log({ dirLocal: dir });
-
   if (!fs.existsSync(`${dir}`)) {
     return res.status(200).json({
       ok: true,
@@ -88,7 +86,6 @@ export const getFiles = async (req: Req, res: Resp) => {
     });
   });
 
-  console.log({ fileList });
   return res.status(200).json({
     ok: true,
     msg: "files successfully obtained",
