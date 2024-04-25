@@ -16,10 +16,12 @@ export {
   updateUserContacts,
   updateUserMessages,
   changeDeletedUserStatus,
+  changeValueUserRatings,
   changeUserRole,
   setUserLocation,
   incrementUserNotifications,
   deleteUser,
+  restoreUser,
   changeActiveUserStatus,
 } from "./users";
 export {

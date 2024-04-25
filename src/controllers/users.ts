@@ -462,7 +462,7 @@ export const getUsersByServices = async (req: Request, res: Response) => {
     returnErrorStatus(error, res, "Error getting users by services");
   }
 
-  if (users!?.length > 0) {
+  if (users.length > 0) {
     response = {
       ok: true,
       msg: "The list of users was successfully obtained",
@@ -729,6 +729,33 @@ export const changeActiveUserStatus = async (req: Request, res: Response) => {
   });
 };
 
+export const changeValueUserRatings = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { ratings } = req.body;
+
+  try {
+    await User.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          ratings,
+        },
+      },
+      { new: true, strict: false }
+    );
+  } catch (error) {
+    return returnErrorStatus(error, res, "Error changing user ratings");
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "User updated successfully",
+    result: {
+      ratings,
+    },
+  });
+};
+
 export const changeUserRole = async (req: Request, res: Response) => {
   const { id, value } = req.params;
 
@@ -791,6 +818,49 @@ export const deleteUser = async (req: Request, res: Response) => {
   return res.status(200).json({
     ok: true,
     msg: "User deleted successfully",
+    result: { user },
+  });
+};
+
+export const restoreUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const role = req.headers["x-role"];
+
+  if (role === "customer" || role === "provider") {
+    return res.status(401).json({
+      ok: false,
+      msg: "Unauthorized",
+      result: {},
+    });
+  }
+
+  let user: IUser = {} as IUser;
+
+  try {
+    user = await User.findByIdAndUpdate(
+      id,
+      { isDeleted: false },
+      { new: true }
+    );
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      msg: "Please talk to the administrator",
+      result: { error },
+    });
+  }
+
+  if (!user) {
+    return res.status(404).json({
+      ok: false,
+      msg: "User not found",
+      result: {},
+    });
+  }
+
+  return res.status(200).json({
+    ok: true,
+    msg: "User restored successfully",
     result: { user },
   });
 };

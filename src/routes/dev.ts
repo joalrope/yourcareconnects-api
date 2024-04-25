@@ -6,4 +6,4 @@ export const devRouter = Router();
 
 devRouter.get("/clearContacts", [validateJWT], clearContacts);
 
-devRouter.get("/userHardDelete", [validateJWT], userHardDelete);
+devRouter.get("/userHardDelete/:email", [validateJWT], userHardDelete);

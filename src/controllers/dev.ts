@@ -45,12 +45,14 @@ export const clearContacts = async (_req: Request, res: Response) => {
   });
 };
 
-export const userHardDelete = async (_req: Request, res: Response) => {
-  const result = "Contactos eliminados";
+export const userHardDelete = async (req: Request, res: Response) => {
+  const email = req.params.email;
+
+  const result = await User.deleteOne({ email }, { strict: false });
 
   res.status(200).json({
     ok: true,
-    msg: `Result was successfully obtained`,
+    msg: `The user with email: ${email} was successfully deleted`,
     result: { result },
   });
 };

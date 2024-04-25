@@ -14,12 +14,14 @@ import {
   getUsersByServices,
   updateUserContacts,
   getUserMessages,
+  changeValueUserRatings,
   clearUserNotifications,
   getUsersByIsActive,
   changeDeletedUserStatus,
   setUserLocation,
   thereIsSupport,
   changeActiveUserStatus,
+  restoreUser,
 } from "../controllers";
 
 export const userRouter = Router();
@@ -95,6 +97,19 @@ userRouter.put(
 );
 
 userRouter.put(
+  "/ratings/:id",
+  [
+    validateJWT,
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID").isMongoId(),
+    check("id").custom(userIdAlreadyExists),
+    body("ratings", "You must provide an value").notEmpty(),
+    validateFields,
+  ],
+  changeValueUserRatings
+);
+
+userRouter.put(
   "/active/:id/:value",
   [
     validateJWT,
@@ -157,4 +172,16 @@ userRouter.delete(
     validateFields,
   ],
   deleteUser
+);
+
+userRouter.put(
+  "/restore/:id",
+  [
+    validateJWT,
+    check("id", "You must provide an ID").notEmpty(),
+    check("id", "Not a valid ID ").isMongoId(),
+    check("id").custom(userIdAlreadyExists),
+    validateFields,
+  ],
+  restoreUser
 );

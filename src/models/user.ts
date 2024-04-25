@@ -20,6 +20,11 @@ interface IMultiPolygon {
   coordinates: [number, number][][][];
 }
 
+export interface IRatings {
+  value: number;
+  count: number;
+}
+
 export interface IMessage extends Document {
   sender: Schema.Types.ObjectId;
   receiver: Schema.Types.ObjectId;
@@ -81,7 +86,7 @@ export interface IUser extends Document {
   phoneNumber: string;
   pictures?: Object;
   points?: number;
-  ratings?: number;
+  ratings?: IRatings;
   resetPassword?: IResetPassword;
   subscription?: ISubscription;
   role: string;
@@ -122,6 +127,17 @@ const location = new Schema<ILocation>({
   coordinates: {
     type: [Number],
     default: [0, 0],
+  },
+});
+
+const ratings = new Schema<IRatings>({
+  value: {
+    type: Number,
+    default: 0,
+  },
+  count: {
+    type: Number,
+    default: 0,
   },
 });
 
@@ -190,6 +206,10 @@ const UserSchema = new Schema<IUser>(
     },
     faxNumber: {
       type: String,
+    },
+    ratings: {
+      type: ratings,
+      default: { value: 0, count: 0 },
     },
     resetPassword: {
       type: resetPassword,
