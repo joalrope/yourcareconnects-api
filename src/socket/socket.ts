@@ -39,7 +39,7 @@ export function setupSockets(server: any) {
 
     socket.on("joinRoom", (data) => {
       socket.join(data);
-      console.log("sender: ", data, "is connected withsocket id: ", socket.id);
+      //console.log("sender: ", data, "is connected withsocket id: ", socket.id);
     });
 
     socket.on("userIsTyping", ({ isTyping, names }) => {

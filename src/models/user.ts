@@ -75,6 +75,7 @@ export interface IUser extends Document {
   id?: string;
   isDeleted: boolean;
   isActive: boolean;
+  isAllowedViewData: boolean;
   lastName: string;
   location: ILocation;
   serviceArea?: IMultiPolygon;
@@ -177,6 +178,10 @@ const UserSchema = new Schema<IUser>(
     biography: {
       type: String,
     },
+    ratings: {
+      type: ratings,
+      default: { value: 0, count: 0 },
+    },
     balance: {
       type: Number,
       default: 0.1,
@@ -206,10 +211,6 @@ const UserSchema = new Schema<IUser>(
     },
     faxNumber: {
       type: String,
-    },
-    ratings: {
-      type: ratings,
-      default: { value: 0, count: 0 },
     },
     resetPassword: {
       type: resetPassword,

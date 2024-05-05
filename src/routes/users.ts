@@ -100,11 +100,11 @@ userRouter.put(
   "/ratings/:id",
   [
     validateJWT,
-    check("id", "You must provide an ID").notEmpty(),
+    /*check("id", "You must provide an ID").notEmpty(),
     check("id", "Not a valid ID").isMongoId(),
     check("id").custom(userIdAlreadyExists),
     body("ratings", "You must provide an value").notEmpty(),
-    validateFields,
+    validateFields,*/
   ],
   changeValueUserRatings
 );

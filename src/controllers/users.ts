@@ -100,6 +100,7 @@ export const getUsersByEmail = async (req: Request, res: Response) => {
       role: 1,
       phoneNumbrer: 1,
       location: 1,
+      isAllowedViewData: 1,
       isActive: 1,
       isdeleted: 1,
       pictures: 1,
@@ -154,6 +155,8 @@ export const getUsersByIsActive = async (req: Request, res: Response) => {
         phoneNumber: 1,
         pictures: 1,
         services: 1,
+        ratings: 1,
+        isAllowedViewData: 1,
         isActive: 1,
         isDeleted: 1,
       })
@@ -462,6 +465,8 @@ export const getUsersByServices = async (req: Request, res: Response) => {
     returnErrorStatus(error, res, "Error getting users by services");
   }
 
+  console.log({ users });
+
   if (users.length > 0) {
     response = {
       ok: true,
@@ -732,6 +737,8 @@ export const changeActiveUserStatus = async (req: Request, res: Response) => {
 export const changeValueUserRatings = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { ratings } = req.body;
+
+  console.log({ ratings });
 
   try {
     await User.findByIdAndUpdate(
