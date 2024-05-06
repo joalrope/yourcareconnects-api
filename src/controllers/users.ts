@@ -465,8 +465,6 @@ export const getUsersByServices = async (req: Request, res: Response) => {
     returnErrorStatus(error, res, "Error getting users by services");
   }
 
-  console.log({ users });
-
   if (users.length > 0) {
     response = {
       ok: true,
@@ -737,8 +735,6 @@ export const changeActiveUserStatus = async (req: Request, res: Response) => {
 export const changeValueUserRatings = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { ratings } = req.body;
-
-  console.log({ ratings });
 
   try {
     await User.findByIdAndUpdate(
