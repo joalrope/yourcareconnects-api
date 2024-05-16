@@ -87,7 +87,7 @@ export interface IUser extends Document {
   phoneNumber: string;
   pictures?: Object;
   points?: number;
-  ratings?: IRatings;
+  ratings?: number[];
   resetPassword?: IResetPassword;
   subscription?: ISubscription;
   role: string;
@@ -131,17 +131,6 @@ const location = new Schema<ILocation>({
   },
 });
 
-const ratings = new Schema<IRatings>({
-  value: {
-    type: Number,
-    default: 0,
-  },
-  count: {
-    type: Number,
-    default: 0,
-  },
-});
-
 const serviceArea = new Schema<IMultiPolygon>({
   type: {
     type: String,
@@ -178,10 +167,13 @@ const UserSchema = new Schema<IUser>(
     biography: {
       type: String,
     },
-    ratings: {
-      type: ratings,
-      default: { value: 0, count: 0 },
-    },
+    ratings: [
+      {
+        type: [Number],
+        default: [],
+        //get: (v: number[]) => v.reduce((a, b) => a + b, 0) / v.length,
+      },
+    ],
     balance: {
       type: Number,
       default: 0.1,

@@ -740,9 +740,7 @@ export const changeValueUserRatings = async (req: Request, res: Response) => {
     await User.findByIdAndUpdate(
       { _id: id },
       {
-        $set: {
-          ratings,
-        },
+        $push: { ratings },
       },
       { new: true, strict: false }
     );
@@ -752,7 +750,7 @@ export const changeValueUserRatings = async (req: Request, res: Response) => {
 
   return res.status(200).json({
     ok: true,
-    msg: "User updated successfully",
+    msg: "Your rating has been successfully updated",
     result: {
       ratings,
     },

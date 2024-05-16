@@ -56,3 +56,13 @@ export const userHardDelete = async (req: Request, res: Response) => {
     result: { result },
   });
 };
+
+export const ratingsNormalize = async (_req: Request, res: Response) => {
+  const result = await User.updateMany({}, { $set: { ratings: [] } });
+
+  res.status(200).json({
+    ok: true,
+    msg: `Ratings was successfully normalized`,
+    result: { result },
+  });
+};
