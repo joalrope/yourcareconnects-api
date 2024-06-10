@@ -595,14 +595,27 @@ export const updateUserContacts = async (req: Request, res: Response) => {
   const { contact }: { contact: string } = req.body;
   const addContact = req.query.hasOwnProperty("add")
     ? true
-    : (req.query.hasOwnProperty("remove") as boolean)
+    : req.query.hasOwnProperty("remove")
     ? false
     : null;
 
-  /*try {
-    userDB = await User.find({
-      id,
-      contacts: { $in: [contact] },
+  let user;
+
+  const method = addContact
+    ? {
+        $push: { contacts: contact },
+      }
+    : {
+        $pull: { contacts: contact },
+      };
+
+  const msg = addContact
+    ? "The contact has been added successfully"
+    : "The contact has been deleted successfully";
+
+  try {
+    user = await User.findByIdAndUpdate({ _id: id }, method, {
+      new: true,
     });
   } catch (error) {
     return res.status(500).json({
@@ -612,90 +625,10 @@ export const updateUserContacts = async (req: Request, res: Response) => {
     });
   }
 
-  console.log({ userDB });
-
-  if (userDB.length > 0 && addContact) {
-    return res.status(409).json({
-      ok: false,
-      msg: `The contact ${contact} already exists in the list of contacts`,
-      result: {},
-    });
-  }
-
-  if (userDB.length === 0 && !addContact) {
-    return res.status(409).json({
-      ok: false,
-      msg: `The contact ${contact} does not exists in the list of contacts`,
-      result: {},
-    });
-  }*/
-
-  if (!addContact) {
-    console.log("entro a eliminar");
-    let user;
-
-    try {
-      user = await User.findByIdAndUpdate(
-        { _id: id },
-        {
-          $pull: { contacts: contact },
-        },
-        {
-          new: true,
-        }
-      );
-
-      return res.status(200).json({
-        ok: true,
-        msg: "The contact has been deleted successfully",
-        result: {
-          user,
-        },
-      });
-    } catch (error) {
-      return res.status(500).json({
-        ok: false,
-        msg: "Please talk to the administrator",
-        result: { error },
-      });
-    }
-  }
-
-  if (addContact) {
-    console.log("entro a agregar");
-    let user;
-
-    try {
-      user = await User.findByIdAndUpdate(
-        { _id: id },
-        {
-          $push: { contacts: contact },
-        },
-        {
-          new: true,
-        }
-      );
-
-      return res.status(200).json({
-        ok: true,
-        msg: "The contact has been added successfully",
-        result: {
-          user,
-        },
-      });
-    } catch (error) {
-      return res.status(500).json({
-        ok: false,
-        msg: "Please talk to the administrator",
-        result: { error },
-      });
-    }
-  }
-
-  return res.status(409).json({
-    ok: false,
-    msg: `The contact cannot be ${addContact ? "added" : "deleted"}`,
-    result: {},
+  return res.status(200).json({
+    ok: true,
+    msg,
+    result: { user },
   });
 };
 
